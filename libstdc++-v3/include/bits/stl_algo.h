@@ -167,6 +167,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   /// Provided for stable_partition to use.
   template<typename _InputIterator, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     inline _InputIterator
     __find_if_not(_InputIterator __first, _InputIterator __last,
 		  _Predicate __pred)
@@ -337,6 +338,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   // find_end for forward iterators.
   template<typename _ForwardIterator1, typename _ForwardIterator2,
 	   typename _BinaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     _ForwardIterator1
     __find_end(_ForwardIterator1 __first1, _ForwardIterator1 __last1,
 	       _ForwardIterator2 __first2, _ForwardIterator2 __last2,
@@ -365,6 +367,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   // find_end for bidirectional iterators (much faster).
   template<typename _BidirectionalIterator1, typename _BidirectionalIterator2,
 	   typename _BinaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     _BidirectionalIterator1
     __find_end(_BidirectionalIterator1 __first1,
 	       _BidirectionalIterator1 __last1,
@@ -425,6 +428,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  [__first1,__last1-(__last2-__first2))
   */
   template<typename _ForwardIterator1, typename _ForwardIterator2>
+    _GLIBCXX20_CONSTEXPR
     inline _ForwardIterator1
     find_end(_ForwardIterator1 __first1, _ForwardIterator1 __last1,
 	     _ForwardIterator2 __first2, _ForwardIterator2 __last2)
@@ -474,6 +478,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   */
   template<typename _ForwardIterator1, typename _ForwardIterator2,
 	   typename _BinaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     inline _ForwardIterator1
     find_end(_ForwardIterator1 __first1, _ForwardIterator1 __last1,
 	     _ForwardIterator2 __first2, _ForwardIterator2 __last2,
@@ -3865,6 +3870,7 @@ _GLIBCXX_BEGIN_NAMESPACE_ALGO
    *  If @p __f has a return value it is ignored.
   */
   template<typename _InputIterator, typename _Function>
+    _GLIBCXX20_CONSTEXPR
     _Function
     for_each(_InputIterator __first, _InputIterator __last, _Function __f)
     {
@@ -3886,6 +3892,7 @@ _GLIBCXX_BEGIN_NAMESPACE_ALGO
    *  such that @c *i == @p __val, or @p __last if no such iterator exists.
   */
   template<typename _InputIterator, typename _Tp>
+    _GLIBCXX20_CONSTEXPR
     inline _InputIterator
     find(_InputIterator __first, _InputIterator __last,
 	 const _Tp& __val)
@@ -3942,6 +3949,7 @@ _GLIBCXX_BEGIN_NAMESPACE_ALGO
    *  otherwise returns @p __last1.
   */
   template<typename _InputIterator, typename _ForwardIterator>
+    _GLIBCXX20_CONSTEXPR
     _InputIterator
     find_first_of(_InputIterator __first1, _InputIterator __last1,
 		  _ForwardIterator __first2, _ForwardIterator __last2)
@@ -3983,6 +3991,7 @@ _GLIBCXX_BEGIN_NAMESPACE_ALGO
   */
   template<typename _InputIterator, typename _ForwardIterator,
 	   typename _BinaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     _InputIterator
     find_first_of(_InputIterator __first1, _InputIterator __last1,
 		  _ForwardIterator __first2, _ForwardIterator __last2,

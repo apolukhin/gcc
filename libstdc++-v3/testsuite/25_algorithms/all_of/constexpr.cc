@@ -21,7 +21,7 @@
 
 constexpr int data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-static_assert(std::any_of(std::begin(data), std::end(data), [](auto v) { return v == 1; }), "");
-static_assert(std::any_of(std::begin(data), std::end(data), [](auto v) { return v == 10; }), "");
-static_assert(!std::any_of(std::begin(data), std::end(data), [](auto v) { return v == 42; }), "");
+static_assert(std::all_of(std::begin(data), std::end(data), [](auto v) { return v >= 1; }), "");
+static_assert(!std::all_of(std::begin(data), std::end(data), [](auto v) { return v < 10; }), "");
+static_assert(!std::any_of(std::begin(data), std::end(data), [](auto v) { return v < 1; }), "");
 

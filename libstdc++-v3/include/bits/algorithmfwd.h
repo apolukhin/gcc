@@ -264,10 +264,12 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   // find
 
   template<typename _FIter1, typename _FIter2>
+    _GLIBCXX20_CONSTEXPR
     _FIter1
     find_end(_FIter1, _FIter1, _FIter2, _FIter2);
 
   template<typename _FIter1, typename _FIter2, typename _BinaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     _FIter1
     find_end(_FIter1, _FIter1, _FIter2, _FIter2, _BinaryPredicate);
 
@@ -648,14 +650,17 @@ _GLIBCXX_BEGIN_NAMESPACE_ALGO
     equal(_IIter1, _IIter1, _IIter2, _BinaryPredicate);
 
   template<typename _IIter, typename _Tp>
+    _GLIBCXX20_CONSTEXPR
     _IIter
     find(_IIter, _IIter, const _Tp&);
 
   template<typename _FIter1, typename _FIter2>
+    _GLIBCXX20_CONSTEXPR
     _FIter1
     find_first_of(_FIter1, _FIter1, _FIter2, _FIter2);
 
   template<typename _FIter1, typename _FIter2, typename _BinaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     _FIter1
     find_first_of(_FIter1, _FIter1, _FIter2, _FIter2, _BinaryPredicate);
 
@@ -665,6 +670,7 @@ _GLIBCXX_BEGIN_NAMESPACE_ALGO
     find_if(_IIter, _IIter, _Predicate);
 
   template<typename _IIter, typename _Funct>
+    _GLIBCXX20_CONSTEXPR
     _Funct
     for_each(_IIter, _IIter, _Funct);
 
