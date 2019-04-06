@@ -1,3 +1,4 @@
+
 // <algorithm> Forward declarations  -*- C++ -*-
 
 // Copyright (C) 2007-2019 Free Software Foundation, Inc.
@@ -193,10 +194,12 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
 #if __cplusplus >= 201103L
   template<typename _IIter, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     bool
     all_of(_IIter, _IIter, _Predicate);
 
   template<typename _IIter, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     bool
     any_of(_IIter, _IIter, _Predicate);
 #endif
@@ -273,6 +276,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
 #if __cplusplus >= 201103L
   template<typename _IIter, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     _IIter
     find_if_not(_IIter, _IIter, _Predicate);
 #endif
@@ -315,6 +319,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     is_heap_until(_RAIter, _RAIter, _Compare);
 
   template<typename _IIter, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     bool
     is_partitioned(_IIter, _IIter, _Predicate);
 
@@ -453,6 +458,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
 #if __cplusplus >= 201103L
   template<typename _IIter, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     bool
     none_of(_IIter, _IIter, _Predicate);
 #endif
@@ -654,6 +660,7 @@ _GLIBCXX_BEGIN_NAMESPACE_ALGO
     find_first_of(_FIter1, _FIter1, _FIter2, _FIter2, _BinaryPredicate);
 
   template<typename _IIter, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     _IIter
     find_if(_IIter, _IIter, _Predicate);
 

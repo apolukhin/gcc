@@ -29,25 +29,25 @@ using __gnu_test::input_iterator_wrapper;
 typedef test_container<int, input_iterator_wrapper> Container;
 int array[] = {0, 0, 0, 1, 0, 1};
 
-_GLIBCXX20_CONSTEXPR bool
+bool
 predicate(const int& i) 
 { return i == 1; }
 
-_GLIBCXX20_CONSTEXPR void
+void
 test1()
 {
   Container con(array, array);
   VERIFY( !std::any_of(con.begin(), con.end(), predicate) );
 }
 
-_GLIBCXX20_CONSTEXPR void
+void
 test2()
 {
   Container con(array, array + 1);
   VERIFY( !std::any_of(con.begin(), con.end(), predicate) );
 }
 
-_GLIBCXX20_CONSTEXPR void
+void
 test3()
 {
   Container con(array, array + 6);

@@ -3910,6 +3910,7 @@ _GLIBCXX_BEGIN_NAMESPACE_ALGO
    *  such that @p __pred(*i) is true, or @p __last if no such iterator exists.
   */
   template<typename _InputIterator, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     inline _InputIterator
     find_if(_InputIterator __first, _InputIterator __last,
 	    _Predicate __pred)
