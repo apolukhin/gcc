@@ -206,6 +206,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   template<typename _ForwardIterator1, typename _ForwardIterator2,
 	   typename _BinaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     _ForwardIterator1
     __search(_ForwardIterator1 __first1, _ForwardIterator1 __last1,
 	     _ForwardIterator2 __first2, _ForwardIterator2 __last2,
@@ -258,6 +259,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   */
   template<typename _ForwardIterator, typename _Integer,
 	   typename _UnaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     _ForwardIterator
     __search_n_aux(_ForwardIterator __first, _ForwardIterator __last,
 		   _Integer __count, _UnaryPredicate __unary_pred,
@@ -290,6 +292,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   */
   template<typename _RandomAccessIter, typename _Integer,
 	   typename _UnaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     _RandomAccessIter
     __search_n_aux(_RandomAccessIter __first, _RandomAccessIter __last,
 		   _Integer __count, _UnaryPredicate __unary_pred,
@@ -320,6 +323,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   template<typename _ForwardIterator, typename _Integer,
 	   typename _UnaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     _ForwardIterator
     __search_n(_ForwardIterator __first, _ForwardIterator __last,
 	       _Integer __count,
