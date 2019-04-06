@@ -97,6 +97,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   /// This is an overload used by find algos for the Input Iterator case.
   template<typename _InputIterator, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     inline _InputIterator
     __find_if(_InputIterator __first, _InputIterator __last,
 	      _Predicate __pred, input_iterator_tag)
@@ -108,6 +109,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   /// This is an overload used by find algos for the RAI case.
   template<typename _RandomAccessIterator, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     _RandomAccessIterator
     __find_if(_RandomAccessIterator __first, _RandomAccessIterator __last,
 	      _Predicate __pred, random_access_iterator_tag)
@@ -155,6 +157,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     }
 
   template<typename _Iterator, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     inline _Iterator
     __find_if(_Iterator __first, _Iterator __last, _Predicate __pred)
     {
@@ -177,6 +180,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   /// remaining range length instead of comparing against an end
   /// iterator.
   template<typename _InputIterator, typename _Predicate, typename _Distance>
+    _GLIBCXX20_CONSTEXPR
     _InputIterator
     __find_if_not_n(_InputIterator __first, _Distance& __len, _Predicate __pred)
     {
@@ -504,6 +508,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  @p [__first,__last), and false otherwise.
   */
   template<typename _InputIterator, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     inline bool
     all_of(_InputIterator __first, _InputIterator __last, _Predicate __pred)
     { return __last == std::find_if_not(__first, __last, __pred); }
@@ -521,6 +526,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  @p [__first,__last), and false otherwise.
   */
   template<typename _InputIterator, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     inline bool
     none_of(_InputIterator __first, _InputIterator __last, _Predicate __pred)
     { return __last == _GLIBCXX_STD_A::find_if(__first, __last, __pred); }
@@ -539,6 +545,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  otherwise.
   */
   template<typename _InputIterator, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     inline bool
     any_of(_InputIterator __first, _InputIterator __last, _Predicate __pred)
     { return !std::none_of(__first, __last, __pred); }
@@ -554,6 +561,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  such that @p __pred(*i) is false, or @p __last if no such iterator exists.
   */
   template<typename _InputIterator, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     inline _InputIterator
     find_if_not(_InputIterator __first, _InputIterator __last,
 		_Predicate __pred)
@@ -578,6 +586,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  do not.
   */
   template<typename _InputIterator, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     inline bool
     is_partitioned(_InputIterator __first, _InputIterator __last,
 		   _Predicate __pred)
