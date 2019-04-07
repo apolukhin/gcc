@@ -305,18 +305,22 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
 #if __cplusplus >= 201103L
   template<typename _RAIter>
+    _GLIBCXX20_CONSTEXPR
     bool
     is_heap(_RAIter, _RAIter);
 
   template<typename _RAIter, typename _Compare>
+    _GLIBCXX20_CONSTEXPR
     bool
     is_heap(_RAIter, _RAIter, _Compare);
 
   template<typename _RAIter>
+    _GLIBCXX20_CONSTEXPR
     _RAIter
     is_heap_until(_RAIter, _RAIter);
 
   template<typename _RAIter, typename _Compare>
+    _GLIBCXX20_CONSTEXPR
     _RAIter
     is_heap_until(_RAIter, _RAIter, _Compare);
 
@@ -326,27 +330,33 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     is_partitioned(_IIter, _IIter, _Predicate);
 
   template<typename _FIter1, typename _FIter2>
+    _GLIBCXX20_CONSTEXPR
     bool
     is_permutation(_FIter1, _FIter1, _FIter2);
 
   template<typename _FIter1, typename _FIter2,
 	   typename _BinaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     bool
     is_permutation(_FIter1, _FIter1, _FIter2, _BinaryPredicate);
 
   template<typename _FIter>
+    _GLIBCXX20_CONSTEXPR
     bool
     is_sorted(_FIter, _FIter);
 
   template<typename _FIter, typename _Compare>
+    _GLIBCXX20_CONSTEXPR
     bool
     is_sorted(_FIter, _FIter, _Compare);
 
   template<typename _FIter>
+    _GLIBCXX20_CONSTEXPR
     _FIter
     is_sorted_until(_FIter, _FIter);
 
   template<typename _FIter, typename _Compare>
+    _GLIBCXX20_CONSTEXPR
     _FIter
     is_sorted_until(_FIter, _FIter, _Compare);
 #endif

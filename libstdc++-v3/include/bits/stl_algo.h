@@ -3188,6 +3188,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     }
 
   template<typename _InputIterator, typename _Predicate>
+    _GLIBCXX20_CONSTEXPR
     typename iterator_traits<_InputIterator>::difference_type
     __count_if(_InputIterator __first, _InputIterator __last, _Predicate __pred)
     {
@@ -3207,6 +3208,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  @return  True if the elements are sorted, false otherwise.
   */
   template<typename _ForwardIterator>
+    _GLIBCXX20_CONSTEXPR
     inline bool
     is_sorted(_ForwardIterator __first, _ForwardIterator __last)
     { return std::is_sorted_until(__first, __last) == __last; }
@@ -3221,12 +3223,14 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  @return  True if the elements are sorted, false otherwise.
   */
   template<typename _ForwardIterator, typename _Compare>
+    _GLIBCXX20_CONSTEXPR
     inline bool
     is_sorted(_ForwardIterator __first, _ForwardIterator __last,
 	      _Compare __comp)
     { return std::is_sorted_until(__first, __last, __comp) == __last; }
 
   template<typename _ForwardIterator, typename _Compare>
+    _GLIBCXX20_CONSTEXPR
     _ForwardIterator
     __is_sorted_until(_ForwardIterator __first, _ForwardIterator __last,
 		      _Compare __comp)
@@ -3250,6 +3254,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *           for which the range [__first, i) is sorted.
   */
   template<typename _ForwardIterator>
+    _GLIBCXX20_CONSTEXPR
     inline _ForwardIterator
     is_sorted_until(_ForwardIterator __first, _ForwardIterator __last)
     {
@@ -3274,6 +3279,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *           for which the range [__first, i) is sorted.
   */
   template<typename _ForwardIterator, typename _Compare>
+    _GLIBCXX20_CONSTEXPR
     inline _ForwardIterator
     is_sorted_until(_ForwardIterator __first, _ForwardIterator __last,
 		    _Compare __comp)
@@ -3492,6 +3498,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   template<typename _ForwardIterator1, typename _ForwardIterator2,
 	   typename _BinaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     bool
     __is_permutation(_ForwardIterator1 __first1, _ForwardIterator1 __last1,
 		     _ForwardIterator2 __first2, _BinaryPredicate __pred)
@@ -3540,6 +3547,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *          returns true; otherwise, returns false.
   */
   template<typename _ForwardIterator1, typename _ForwardIterator2>
+    _GLIBCXX20_CONSTEXPR
     inline bool
     is_permutation(_ForwardIterator1 __first1, _ForwardIterator1 __last1,
 		   _ForwardIterator2 __first2)
@@ -3572,6 +3580,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   */
   template<typename _ForwardIterator1, typename _ForwardIterator2,
 	   typename _BinaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     inline bool
     is_permutation(_ForwardIterator1 __first1, _ForwardIterator1 __last1,
 		   _ForwardIterator2 __first2, _BinaryPredicate __pred)
@@ -3591,6 +3600,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 #if __cplusplus > 201103L
   template<typename _ForwardIterator1, typename _ForwardIterator2,
 	   typename _BinaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     bool
     __is_permutation(_ForwardIterator1 __first1, _ForwardIterator1 __last1,
 		     _ForwardIterator2 __first2, _ForwardIterator2 __last2,
@@ -3664,6 +3674,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *          otherwise, returns false.
   */
   template<typename _ForwardIterator1, typename _ForwardIterator2>
+    _GLIBCXX20_CONSTEXPR
     inline bool
     is_permutation(_ForwardIterator1 __first1, _ForwardIterator1 __last1,
 		   _ForwardIterator2 __first2, _ForwardIterator2 __last2)
@@ -3692,6 +3703,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   */
   template<typename _ForwardIterator1, typename _ForwardIterator2,
 	   typename _BinaryPredicate>
+    _GLIBCXX20_CONSTEXPR
     inline bool
     is_permutation(_ForwardIterator1 __first1, _ForwardIterator1 __last1,
 		   _ForwardIterator2 __first2, _ForwardIterator2 __last2,
