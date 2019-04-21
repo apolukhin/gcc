@@ -747,7 +747,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     struct is_empty
     : public integral_constant<bool, __is_empty(_Tp)>
     {
-      static_assert(std::__is_size_known(__type_identity<_Tp>{}),
+      static_assert(std::__is_size_known(__type_identity<_Tp>{}) || !is_class<_Tp>::value,
         "template argument must be a complete class");
     };
 
@@ -756,7 +756,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     struct is_polymorphic
     : public integral_constant<bool, __is_polymorphic(_Tp)>
     {
-      static_assert(std::__is_size_known(__type_identity<_Tp>{}),
+      static_assert(std::__is_size_known(__type_identity<_Tp>{}) || !is_class<_Tp>::value,
         "template argument must be a complete class");
     };
 
@@ -767,7 +767,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     struct is_final
     : public integral_constant<bool, __is_final(_Tp)>
     {
-      static_assert(std::__is_size_known(__type_identity<_Tp>{}),
+      static_assert(std::__is_size_known(__type_identity<_Tp>{}) || !is_class<_Tp>::value,
         "template argument must be a complete class");
     };
 #endif
@@ -777,7 +777,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     struct is_abstract
     : public integral_constant<bool, __is_abstract(_Tp)>
     {
-      static_assert(std::__is_size_known(__type_identity<_Tp>{}),
+      static_assert(std::__is_size_known(__type_identity<_Tp>{}) || !is_class<_Tp>::value,
         "template argument must be a complete class");
     };
 
@@ -885,7 +885,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     struct is_destructible
     : public __is_destructible_safe<_Tp>::type
     {
-      static_assert(std::__is_size_known(__type_identity<_Tp>{}),
+      static_assert(std::__is_size_known(__type_identity<_Tp>{}) || !is_class<_Tp>::value,
         "template argument must be a complete class");
     };
 
