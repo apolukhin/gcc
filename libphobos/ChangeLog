@@ -1,3 +1,83 @@
+2019-04-20  Iain Buclaw  <ibuclaw@gdcproject.org>
+
+	PR d/89293
+	* libdruntime/core/atomic.d (casImpl): Remove static assert for
+	GNU_Have_Atomics, add static path to handle missing atomic support.
+	(atomicLoad): Likewise.
+	(atomicStore): Likewise.
+	(atomicFence):  Likewise.
+	(atomicMutexHandle, AtomicMutex): Declare types.
+	(_getAtomicMutex): New function.
+	(getAtomicMutex): Declare.
+
+2019-04-16  Iain Buclaw  <ibuclaw@gdcproject.org>
+
+	* config.h.in: Regenerate.
+	* configure: Regenerate.
+	* m4/druntime/libraries.m4 (DRUNTIME_LIBRARIES_BACKTRACE): Set
+	CPPFLAGS correctly for backtrace support test.
+
+2019-04-14  Rainer Orth  <ro@CeBiTec.Uni-Bielefeld.DE>
+
+	* configure.tgt (LIBPHOBOS_SUPPORTED): Default to no.
+	Set to yes explicitly.
+	(x86_64-*-solaris2.11* | i?86-*-solaris2.11*): Mark supported.
+	* configure.ac: Handle --enable-libphobos.
+	(x86_64-*-solaris2.* | i?86-*-solaris2.*): Only mark supported
+	with gas.
+	(ENABLE_LIBPHOBOS): New conditional.
+	* configure: Regenerate.
+	* Makefile.am (SUBDIRS): Only set if ENABLE_LIBPHOBOS.
+	* Makefile.in: Regenerate.
+
+2019-04-14  Rainer Orth  <ro@CeBiTec.Uni-Bielefeld.DE>
+	    Iain Buclaw  <ibuclaw@gdcproject.org>
+
+	PR d/88150
+	* m4/druntime/os.m4 (DRUNTIME_OS_DLPI_TLS_MODID): New macro.
+	* configure.ac: Use it.
+	Call AC_USE_SYSTEM_EXTENSIONS.
+	* configure: Regenerate.
+	* Makefile.in, libdruntime/Makefile.in, src/Makefile.in,
+	testsuite/Makefile.in: Regenerate.
+	* libdruntime/gcc/config.d.in (OS_Have_Dlpi_Tls_Modid): Define.
+	* libdruntime/gcc/sections/elf_shared.d: Import gcc.config.
+	(scanSegments) <PT_TLS> [OS_Have_Dlpi_Tls_Modid]: Use
+	dlpi_tls_modid.
+	[Solaris]: Use dlinfo(RTLD_DI_LINKMAP) to get rt_tlsmodid.
+	Otherwise clear pdso._tlsMod, pdso._tlsSize.
+	(getTLSRange) [Solaris && !OS_Have_Dlpi_Tls_Modid]: Readjust mod.
+
+2019-04-14  Rainer Orth  <ro@CeBiTec.Uni-Bielefeld.DE>
+
+	* m4/druntime/os.m4 (DRUNTIME_OS_LINK_SPEC): New macro.
+	* configure.ac: Call it.
+	* configure: Regenerate.
+	* Makefile.in, libdruntime/Makefile.in, src/Makefile.in,
+	testsuite/Makefile.in: Regenerate.
+	* src/libgphobos.spec.in (*link): Append OS_LINK_SPEC.
+
+2019-04-14  Rainer Orth  <ro@CeBiTec.Uni-Bielefeld.DE>
+
+	PR d/88150
+	* libdruntime/gcc/sections/elf_shared.d [Solaris] (SharedELF): Set
+	to true.
+	Import core.sys.solaris.dlfcn, core.sys.solaris.link,
+	core.sys.solaris.sys.elf, core.sys.solaris.sys.link.
+	(dummy_ref): Declare.
+	(initSections): Initialize dummy_ref.
+	(getDependencies): Set strtab.
+	(handleForName): Don't dlclose handle.
+	(findDSOInfoForAddr): Set IterateManually.
+	(getprogname): Declare.
+	(progname): Use it.
+	* libdruntime/gcc/sections/package.d [Solaris]: Import
+	gcc.sections.elf_shared instead of gcc.sections.solaris.
+	* libdruntime/gcc/sections/solaris.d: Remove.
+	* libdruntime/Makefile.am (DRUNTIME_DSOURCES): Remove
+	gcc/sections/solaris.d.
+	* libdruntime/Makefile.in: Regenerate.
+
 2019-04-13  Iain Buclaw  <ibuclaw@gdcproject.org>
 
 	* libdruntime/Makefile.am (DRUNTIME_CSOURCES): Remove bss_sections.c.

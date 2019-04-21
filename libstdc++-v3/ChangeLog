@@ -1,3 +1,85 @@
+2019-04-21  Iain Sandoe  <iain@sandoe.co.uk>
+
+	* testsuite/17_intro/headers/c++1998/charset.cc: Skip for Darwin8
+	to Darwin10.
+	* testsuite/17_intro/headers/c++2011/charset.cc: Likewise.
+	* testsuite/17_intro/headers/c++2014/charset.cc: Likewise.
+	* testsuite/17_intro/headers/c++2017/charset.cc: Likewise.
+	* testsuite/17_intro/headers/c++2020/charset.cc: Likewise.
+
+2019-04-20  Thomas Rodgers <trodgers@redhat.com>
+
+	Delegate PSTL configuration to pstl/pstl_config.h
+
+	* include/bits/c++config: Remove explicit PSTL configuration
+	macros and use definitions from <pstl/pstl_config.h>.
+	
+2019-04-20  Thomas Rodgers <trodgers@redhat.com>
+
+	Cleanup algorithm implementations
+	* include/pstl/glue_algorithm_impl.h (stable_sort): Forward
+        execution policy.
+	(mismatch): Forward execution policy.
+	(equal): Qualify call to std::equal().
+	(partial_sort): Forward execution policy.
+	(inplace_merge): Forward execution policy.
+	
+2019-04-19  Thomas Rodgers <trodgers@redhat.com>
+	
+	Improve implementation of parallel equal()
+	* include/pstl/algorithm_impl.h
+	(__internal::__brick_equal): use "4 iterator" version of
+	std::equal().
+	(__internal::__brick_equal): use simd for random access
+	iterators on unsequenced execution policies.
+	(__internal::__pattern_equal): add "4 iterator" version
+	(__internal::__pattern_equal): dispatch to simd __brick_equal
+	for vector-only execution policies.
+	(__internal::__pattern_equal): dispatch to __parallel_or for
+	parallel execution policies.
+	* include/pstl/glue_algorithm_impl.h
+	(std::equal): dispatch to "4 iterator" version of
+	__internal::__pattern_equal().
+	
+2019-04-17  Jonathan Wakely  <jwakely@redhat.com>
+
+	PR libstdc++/90105
+	* include/bits/forward_list.h (operator==): Do not use operator!= to
+	compare elements.
+	(forward_list<T, A>::sort(Comp)): When elements are equal take the one
+	earlier in the list, so that sort is stable.
+	* testsuite/23_containers/forward_list/operations/90105.cc: New test.
+	* testsuite/23_containers/forward_list/comparable.cc: Test with
+	types that meet the minimum EqualityComparable and LessThanComparable
+	requirements. Remove irrelevant comment.
+
+	* include/std/variant (__detail::__variant::_Traits::_S_copy_assign):
+	Do not depend on whether all alternative types are move constructible.
+	(__detail::__variant::_Copy_assign_base::operator=): Remove cv-quals
+	from the operand when deciding whether to perform the assignment.
+	* testsuite/20_util/variant/compile.cc (DeletedMoves): Define type
+	with deleted move constructor and deleted move assignment operator.
+	(default_ctor, copy_ctor, move_ctor, copy_assign, move_assign): Check
+	behaviour of variants with DeletedMoves as an alternative.
+	* testsuite/20_util/variant/run.cc (DeletedMoves): Define same type.
+	(move_ctor, move_assign): Check that moving a variant with a
+	DeletedMoves alternative falls back to copying instead of moving.
+
+	* testsuite/20_util/variant/compile.cc: Remove empty string literals
+	from static_assert declarations.
+
+	* testsuite/20_util/variant/compile.cc (MoveCtorOnly): Fix type to
+	actually match its name.
+	(MoveCtorAndSwapOnly): Define new type that adds swap to MoveCtorOnly.
+	(test_swap()): Fix result for MoveCtorOnly and check
+	MoveCtorAndSwapOnly.
+
+	* include/std/optional (optional::value_or(U&&) &&): Add missing
+	constexpr specifier.
+	* testsuite/20_util/optional/constexpr/observers/4.cc: Check value_or
+	for disengaged optionals and rvalue optionals.
+	* testsuite/20_util/optional/observers/4.cc: Likewise.
+
 2019-04-12  Thomas Rodgers  <trodgers@redhat.com>
 	
 	* include/pstl/algorithm_impl.h: Uglify identfiers.

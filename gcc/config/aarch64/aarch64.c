@@ -11483,7 +11483,7 @@ aarch64_override_options_internal (struct gcc_options *opts)
   if (aarch64_stack_protector_guard == SSP_GLOBAL
       && opts->x_aarch64_stack_protector_guard_offset_str)
     {
-      error ("incompatible options %<-mstack-protector-guard=global%> and"
+      error ("incompatible options %<-mstack-protector-guard=global%> and "
 	     "%<-mstack-protector-guard-offset=%s%>",
 	     aarch64_stack_protector_guard_offset_str);
     }
@@ -14924,8 +14924,7 @@ aarch64_simd_vector_alignment (const_tree type)
        be set for non-predicate vectors of booleans.  Modes are the most
        direct way we have of identifying real SVE predicate types.  */
     return GET_MODE_CLASS (TYPE_MODE (type)) == MODE_VECTOR_BOOL ? 16 : 128;
-  HOST_WIDE_INT align = tree_to_shwi (TYPE_SIZE (type));
-  return MIN (align, 128);
+  return wi::umin (wi::to_wide (TYPE_SIZE (type)), 128).to_uhwi ();
 }
 
 /* Implement target hook TARGET_VECTORIZE_PREFERRED_VECTOR_ALIGNMENT.  */

@@ -1,3 +1,21 @@
+2019-04-21  Iain Sandoe  <iain@sandoe.co.uk>
+
+	* MAINTAINERS: Add myself as co-maintainer for Darwin.
+
+2019-04-18  Iain Sandoe  <iain@sandoe.co.uk>
+
+	* MAINTAINERS: Update my email address.
+
+2019-04-14  Johannes Pfau  <johannespfau@gmail.com>
+
+	* configure.ac: Remove d from unsupported languages on mingw and cygwin.
+	* configure: Regenerate.
+
+2019-04-14  Rainer Orth  <ro@CeBiTec.Uni-Bielefeld.DE>
+
+	* configure.ac (enable_libphobos): Check LIBPHOBOS_SUPPORTED.
+	* configure: Regenerate.
+
 2019-04-12  Iain Buclaw  <ibuclaw@gdcproject.org>
 
 	* configure.ac: Add target-zlib to target_libraries.
