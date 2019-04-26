@@ -20,7 +20,10 @@
 #include <type_traits>
 
 struct X;
-static_assert(!std::__is_size_known(std::__type_identity<X>{}), "");
+static_assert(
+  !std::__is_complete_or_unbounded(std::__type_identity<X>{}), "error");
 
 struct X{};
-static_assert(std::__is_size_known(std::__type_identity<X>{}), "Result memoized. This leads to worse diagnostics");
+static_assert(
+  std::__is_complete_or_unbounded(std::__type_identity<X>{}),
+  "Result memoized. This leads to worse diagnostics");
