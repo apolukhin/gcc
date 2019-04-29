@@ -702,7 +702,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public integral_constant<bool, __is_trivial(_Tp)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   // is_trivially_copyable
@@ -711,7 +711,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public integral_constant<bool, __is_trivially_copyable(_Tp)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_standard_layout
@@ -720,7 +720,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public integral_constant<bool, __is_standard_layout(_Tp)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_pod
@@ -730,7 +730,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public integral_constant<bool, __is_pod(_Tp)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_literal_type
@@ -739,7 +739,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public integral_constant<bool, __is_literal_type(_Tp)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_empty
@@ -748,7 +748,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public integral_constant<bool, __is_empty(_Tp)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_polymorphic
@@ -757,7 +757,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public integral_constant<bool, __is_polymorphic(_Tp)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
 #if __cplusplus >= 201402L
@@ -768,7 +768,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public integral_constant<bool, __is_final(_Tp)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 #endif
 
@@ -778,7 +778,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public integral_constant<bool, __is_abstract(_Tp)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   template<typename _Tp,
@@ -886,7 +886,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_destructible_safe<_Tp>::type
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   // is_nothrow_destructible requires that is_destructible is
@@ -937,7 +937,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_nt_destructible_safe<_Tp>::type
     {
         static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   struct __do_is_default_constructible_impl
@@ -988,7 +988,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_default_constructible_safe<_Tp>::type
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_constructible
@@ -1002,7 +1002,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
       : public __is_constructible_impl<_Tp, _Args...>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   template<typename _Tp, bool = __is_referenceable<_Tp>::value>
@@ -1023,7 +1023,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_copy_constructible_impl<_Tp>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   template<typename _Tp, bool = __is_referenceable<_Tp>::value>
@@ -1044,7 +1044,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_move_constructible_impl<_Tp>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   template<typename _Tp>
@@ -1079,7 +1079,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_nothrow_default_constructible_impl<_Tp>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   template<typename _Tp, typename... _Args>
@@ -1110,7 +1110,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_nothrow_constructible_impl<_Tp, _Args...>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   template<typename _Tp, bool = __is_referenceable<_Tp>::value>
@@ -1131,7 +1131,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_nothrow_copy_constructible_impl<_Tp>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   template<typename _Tp, bool = __is_referenceable<_Tp>::value>
@@ -1152,7 +1152,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_nothrow_move_constructible_impl<_Tp>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_assignable
@@ -1161,7 +1161,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
       : public __bool_constant<__is_assignable(_Tp, _Up)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   template<typename _Tp, bool = __is_referenceable<_Tp>::value>
@@ -1182,7 +1182,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_copy_assignable_impl<_Tp>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   template<typename _Tp, bool = __is_referenceable<_Tp>::value>
@@ -1203,7 +1203,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_move_assignable_impl<_Tp>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   template<typename _Tp, typename _Up>
@@ -1223,7 +1223,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_nothrow_assignable_impl<_Tp, _Up>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   template<typename _Tp, bool = __is_referenceable<_Tp>::value>
@@ -1244,7 +1244,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_nt_copy_assignable_impl<_Tp>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   template<typename _Tp, bool = __is_referenceable<_Tp>::value>
@@ -1265,7 +1265,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_nt_move_assignable_impl<_Tp>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_trivially_constructible
@@ -1274,7 +1274,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __bool_constant<__is_trivially_constructible(_Tp, _Args...)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_trivially_default_constructible
@@ -1283,7 +1283,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __bool_constant<__is_trivially_constructible(_Tp)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   struct __do_is_implicitly_default_constructible_impl
@@ -1337,7 +1337,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_trivially_copy_constructible_impl<_Tp>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_trivially_move_constructible
@@ -1361,7 +1361,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_trivially_move_constructible_impl<_Tp>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_trivially_assignable
@@ -1370,7 +1370,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __bool_constant<__is_trivially_assignable(_Tp, _Up)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_trivially_copy_assignable
@@ -1392,7 +1392,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_trivially_copy_assignable_impl<_Tp>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_trivially_move_assignable
@@ -1414,7 +1414,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_trivially_move_assignable_impl<_Tp>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_trivially_destructible
@@ -1424,7 +1424,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 		    __bool_constant<__has_trivial_destructor(_Tp)>>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
 
@@ -1434,7 +1434,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public integral_constant<bool, __has_virtual_destructor(_Tp)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
 
@@ -1446,7 +1446,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public integral_constant<std::size_t, alignof(_Tp)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// rank
@@ -1497,12 +1497,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   template<typename _Base, typename _Derived>
     struct is_base_of
     : public integral_constant<bool, __is_base_of(_Base, _Derived)>
-    {
-      static_assert(std::__is_complete_or_unbounded(__type_identity<_Base>{}),
-        "_Base must be a complete type or an unbounded array");
-      static_assert(std::__is_complete_or_unbounded(__type_identity<_Derived>{}),
-        "_Derived must be a complete type or an unbounded array");
-    };
+    { };
 
   template<typename _From, typename _To,
            bool = __or_<is_void<_From>, is_function<_To>,
@@ -2759,7 +2754,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_swappable_impl<_Tp>::type
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_nothrow_swappable
@@ -2768,7 +2763,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : public __is_nothrow_swappable_impl<_Tp>::type
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
 #if __cplusplus >= 201402L
@@ -2962,7 +2957,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : __is_invocable_impl<__invoke_result<_Fn, _ArgTypes...>, void>::type
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Fn>{}),
-        "_Fn must be a complete type or an unbounded array");
+        "_Fn must be a complete class or an unbounded array");
     };
 
   /// std::is_invocable_r
@@ -2971,7 +2966,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     : __is_invocable_impl<__invoke_result<_Fn, _ArgTypes...>, _Ret>::type
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Fn>{}),
-        "_Fn must be a complete type or an unbounded array");
+        "_Fn must be a complete class or an unbounded array");
     };
 
   /// std::is_nothrow_invocable
@@ -2981,7 +2976,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
              __call_is_nothrow_<_Fn, _ArgTypes...>>::type
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Fn>{}),
-        "_Fn must be a complete type or an unbounded array");
+        "_Fn must be a complete class or an unbounded array");
     };
 
   template<typename _Result, typename _Ret, typename = void>
@@ -3191,7 +3186,7 @@ template <typename _From, typename _To>
       )>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   template<typename _Tp>
@@ -3207,7 +3202,7 @@ template <typename _From, typename _To>
     : bool_constant<__is_aggregate(remove_cv_t<_Tp>)>
     {
       static_assert(std::__is_complete_or_unbounded(__type_identity<_Tp>{}),
-        "template argument must be a complete type or an unbounded array");
+        "template argument must be a complete class or an unbounded array");
     };
 
   /// is_aggregate_v

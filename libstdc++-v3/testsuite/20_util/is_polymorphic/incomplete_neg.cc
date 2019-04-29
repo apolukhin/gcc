@@ -1,4 +1,6 @@
 // { dg-do compile { target c++11 } }
+// { dg-excess-errors "invalid use of incomplete type" }
+// { dg-prune-output "must be a complete" }
 //
 // Copyright (C) 2019 Free Software Foundation, Inc.
 //
@@ -16,8 +18,6 @@
 // You should have received a copy of the GNU General Public License along
 // with this library; see the file COPYING3.  If not see
 // <http://www.gnu.org/licenses/>.
-
-// { dg-error "must be a complete class" "" { target *-*-* } 0 }
 
 #include <type_traits>
 

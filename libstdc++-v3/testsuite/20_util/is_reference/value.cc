@@ -36,6 +36,6 @@ void test01()
 
   // Sanity check.
   static_assert(test_category<is_reference, ClassType>(false), "");
-  static_assert(test_category<is_reference, IncompleteType>(false), "");
+  static_assert(test_category<is_reference, IncompleteClass>(false), "");
 }
 

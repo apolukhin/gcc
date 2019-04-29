@@ -1,4 +1,5 @@
 // { dg-do compile { target c++11 } }
+// { dg-prune-output "must be a complete" }
 
 // Copyright (C) 2019 Free Software Foundation, Inc.
 //
@@ -17,9 +18,6 @@
 // with this library; see the file COPYING3.  If not see
 // <http://www.gnu.org/licenses/>.
 
-
-// { dg-error "must be a complete class" "" { target *-*-* } 0 }
-
 #include <type_traits>
 
 struct X;
@@ -27,4 +25,3 @@ constexpr bool res_incomplete = std::is_move_constructible<X>::value; // { dg-er
 
 struct X{};
 constexpr bool res_complete = std::is_default_constructible<X>::value; // { dg-bogus "required from here" }
-
