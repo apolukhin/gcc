@@ -1,5 +1,5 @@
 // { dg-do compile { target c++11 } }
-// { dg-excess-errors "invalid use of incomplete type" }
+// { dg-prune-output "invalid use of incomplete type" }
 // { dg-prune-output "must be a complete" }
 //
 // Copyright (C) 2019 Free Software Foundation, Inc.
