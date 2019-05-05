@@ -48,4 +48,5 @@ void test01()
   static_assert(test_category<is_class, int (ClassType::*) (int)>(false), "");
   static_assert(test_category<is_class, int (int)>(false), "");
   static_assert(test_category<is_class, EnumType>(false), "");
+  static_assert(test_category<is_class, IncompleteUnion>(false), "");
 }
