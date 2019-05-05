@@ -184,12 +184,16 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   // Forward declarations
   template<typename>
-    struct is_class;
+    struct is_reference;
   template<typename>
-    struct is_union;
+    struct is_function;
+  template<typename>
+    struct is_void;
+  template<typename>
+    struct __is_array_unknown_bounds;
 
-  // Helper functions that return false_type for incomplete classes
-  // and unions.
+  // Helper functions that return false_type for incomplete classes,
+  // incomplete unions and arrays of known bound from those.
 
   template <typename _T, size_t = sizeof(_T)>
     constexpr true_type __is_complete_or_unbounded(__type_identity<_T>)
@@ -197,10 +201,12 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   template <typename _TypeIdentity, 
       typename _NestedType = typename _TypeIdentity::type>
-    constexpr typename __not_< __or_<
-      is_class<_NestedType>,
-      is_union<_NestedType>
-    > >::type __is_complete_or_unbounded(_TypeIdentity)
+    constexpr typename __or_<
+      is_reference<_NestedType>,
+      is_function<_NestedType>,
+      is_void<_NestedType>,
+      __is_array_unknown_bounds<_NestedType>
+    >::type __is_complete_or_unbounded(_TypeIdentity)
     { return {}; }
 
   // For several sfinae-friendly trait implementations we transport both the
@@ -423,9 +429,6 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   template<typename _Tp>
     struct is_rvalue_reference<_Tp&&>
     : public true_type { };
-
-  template<typename>
-    struct is_function;
 
   template<typename>
     struct __is_member_object_pointer_helper
