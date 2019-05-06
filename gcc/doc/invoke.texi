@@ -674,6 +674,7 @@ Objective-C and Objective-C++ Dialects}.
 -mabi=@var{name} @gol
 -mapcs-stack-check  -mno-apcs-stack-check @gol
 -mapcs-reentrant  -mno-apcs-reentrant @gol
+-mgeneral-regs-only @gol
 -msched-prolog  -mno-sched-prolog @gol
 -mlittle-endian  -mbig-endian @gol
 -mbe8  -mbe32 @gol
@@ -7960,7 +7961,7 @@ assembler was found to support such directives.
 Force GCC to generate DWARF2+ line number tables internally, if DWARF2+
 line number tables are to be generated.
 
-@item gas-locview-support
+@item -gas-locview-support
 @opindex gas-locview-support
 Inform the compiler that the assembler supports @code{view} assignment
 and reset assertion checking in @code{.loc} directives.
@@ -7968,7 +7969,7 @@ and reset assertion checking in @code{.loc} directives.
 This option will be enabled by default if, at GCC configure time, the
 assembler was found to support them.
 
-@item gno-as-locview-support
+@item -gno-as-locview-support
 Force GCC to assign view numbers internally, if
 @option{-gvariable-location-views} are explicitly requested.
 
@@ -17067,6 +17068,12 @@ The default depends on the specific target configuration.  Note that
 the hard-float and soft-float ABIs are not link-compatible; you must
 compile your entire program with the same ABI, and link with a
 compatible set of libraries.
+
+@item -mgeneral-regs-only
+@opindex mgeneral-regs-only
+Generate code which uses only the general-purpose registers.  This will prevent
+the compiler from using floating-point and Advanced SIMD registers but will not
+impose any restrictions on the assembler.
 
 @item -mlittle-endian
 @opindex mlittle-endian
@@ -28499,8 +28506,9 @@ By default GCC inlines string operations only when the destination is
 known to be aligned to least a 4-byte boundary.  
 This enables more inlining and increases code
 size, but may improve performance of code that depends on fast
-@code{memcpy}, @code{strlen},
-and @code{memset} for short lengths.
+@code{memcpy} and @code{memset} for short lengths.
+The option enables inline expansion of @code{strlen} for all
+pointer alignments.
 
 @item -minline-stringops-dynamically
 @opindex minline-stringops-dynamically

@@ -1,3 +1,35 @@
+2019-05-01  Andrew Benson  <abensonca@gmail.com>
+
+	* module.c (write_module): Initialize module_column before writing
+	module to ensure line break occurs at correct column.
+
+2019-05-01 Dominique d'Humieres  <dominiq@gcc.gnu.org>
+
+	PR fortran/60144
+	* match.c (gfc_match_parens): Change the location for missing ')'.
+	(gfc_match_if): Detect a missing '('. Remove the spurious named
+	constant error. Change the wording of some errors.
+	(gfc_match_else): Change the wording of an error.
+	(gfc_match_elseif): Detect a missing '('. Improve the matching
+	process to get a better syntax analysis.
+
+2019-04-19  Steven G. Kargl  <kargl@gcc.gnu.org>
+
+	PR fortran/90166
+	* decl.c (in_module_or_interface): New function to check that the
+	current state is in a module, submodule, or interface.
+	(gfc_match_prefix): Use it.
+
+2019-04-22  Paul Thomas  <pault@gcc.gnu.org>
+
+	PR fortran/57284
+	* resolve.c (find_array_spec): If this is a class expression
+	and the symbol and component array specs are the same, this is
+	not an error.
+	*trans-intrinsic.c (gfc_conv_intrinsic_size): If a class symbol
+	argument, has no namespace, it has come from the interface
+	mapping and the _data component must be accessed directly.
+
 2019-04-17  Thomas Schwinge  <thomas@codesourcery.com>
 
 	PR fortran/90048
