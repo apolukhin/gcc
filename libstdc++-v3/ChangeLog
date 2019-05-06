@@ -2,7 +2,7 @@
 
 	PR libstdc++/71579
 	* include/std/type_traits: Add static_asserts to make sure that
-	type traits are not missused with an incomplete type.
+	type traits are not misused with an incomplete type.
 	* testsuite/20_util/__is_complete_or_unbounded/memoization.cc:
 	New test.
 	* testsuite/20_util/__is_complete_or_unbounded/memoization_neg.cc:
