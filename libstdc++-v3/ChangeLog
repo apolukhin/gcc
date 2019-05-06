@@ -1,3 +1,27 @@
+2019-05-06  Antony Polukhin  <antoshkka@gmail.com>
+
+	PR libstdc++/71579
+	* include/std/type_traits: Add static_asserts to make sure that
+	type traits are not missused with an incomplete type.
+	* testsuite/20_util/__is_complete_or_unbounded/memoization.cc:
+	New test.
+	* testsuite/20_util/__is_complete_or_unbounded/memoization_neg.cc:
+	Likewise.
+	* testsuite/20_util/__is_complete_or_unbounded/value.cc: Likewise.
+	* testsuite/20_util/is_abstract/incomplete_neg.cc: Likewise.
+	* testsuite/20_util/is_aggregate/incomplete_neg.cc: Likewise.
+	* testsuite/20_util/is_class/value.cc: Likewise.
+	* testsuite/20_util/is_function/value.cc: Likewise.
+	* testsuite/20_util/is_move_constructible/incomplete_neg.cc: Likewise.
+	* testsuite/20_util/is_nothrow_move_assignable/incomplete_neg.cc:
+	Likewise.
+	* testsuite/20_util/is_polymorphic/incomplete_neg.cc: Likewise.
+	* testsuite/20_util/is_reference/value.cc: Likewise.
+	* testsuite/20_util/is_unbounded_array/value.cc: Likewise.
+	* testsuite/20_util/is_union/value.cc: Likewise.
+	* testsuite/20_util/is_void/value.cc: Likewise.
+	* testsuite/util/testsuite_tr1.h: Add incomplete union type.
+
 2019-05-06  François Dumont  <fdumont@gcc.gnu.org>
 
 	* python/libstdcxx/v6/printers.py (add_one_template_type_printer):
