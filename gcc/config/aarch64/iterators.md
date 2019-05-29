@@ -1060,6 +1060,9 @@
 ;; Map smax to smin and umax to umin.
 (define_code_attr max_opp [(smax "smin") (umax "umin")])
 
+;; Same as above, but louder.
+(define_code_attr MAX_OPP [(smax "SMIN") (umax "UMIN")])
+
 ;; The number of subvectors in an SVE_STRUCT.
 (define_mode_attr vector_count [(VNx32QI "2") (VNx16HI "2")
 				(VNx8SI  "2") (VNx4DI  "2")
@@ -1513,9 +1516,11 @@
 (define_int_iterator FMAXMIN_UNS [UNSPEC_FMAX UNSPEC_FMIN
 				  UNSPEC_FMAXNM UNSPEC_FMINNM])
 
-(define_int_iterator PAUTH_LR_SP [UNSPEC_PACISP UNSPEC_AUTISP])
+(define_int_iterator PAUTH_LR_SP [UNSPEC_PACIASP UNSPEC_AUTIASP
+				  UNSPEC_PACIBSP UNSPEC_AUTIBSP])
 
-(define_int_iterator PAUTH_17_16 [UNSPEC_PACI1716 UNSPEC_AUTI1716])
+(define_int_iterator PAUTH_17_16 [UNSPEC_PACIA1716 UNSPEC_AUTIA1716
+				  UNSPEC_PACIB1716 UNSPEC_AUTIB1716])
 
 (define_int_iterator VQDMULH [UNSPEC_SQDMULH UNSPEC_SQRDMULH])
 
@@ -1794,16 +1799,34 @@
 				  (UNSPEC_FCVTZU "fcvtzu")])
 
 ;; Pointer authentication mnemonic prefix.
-(define_int_attr pauth_mnem_prefix [(UNSPEC_PACISP "paci")
-				    (UNSPEC_AUTISP "auti")
-				    (UNSPEC_PACI1716 "paci")
-				    (UNSPEC_AUTI1716 "auti")])
+(define_int_attr pauth_mnem_prefix [(UNSPEC_PACIASP "pacia")
+				    (UNSPEC_PACIBSP "pacib")
+				    (UNSPEC_PACIA1716 "pacia")
+				    (UNSPEC_PACIB1716 "pacib")
+				    (UNSPEC_AUTIASP "autia")
+				    (UNSPEC_AUTIBSP "autib")
+				    (UNSPEC_AUTIA1716 "autia")
+				    (UNSPEC_AUTIB1716 "autib")])
 
-;; Pointer authentication HINT number for NOP space instructions using A Key.
-(define_int_attr pauth_hint_num_a [(UNSPEC_PACISP "25")
-				    (UNSPEC_AUTISP "29")
-				    (UNSPEC_PACI1716 "8")
-				    (UNSPEC_AUTI1716 "12")])
+(define_int_attr pauth_key [(UNSPEC_PACIASP "AARCH64_KEY_A")
+			    (UNSPEC_PACIBSP "AARCH64_KEY_B")
+			    (UNSPEC_PACIA1716 "AARCH64_KEY_A")
+			    (UNSPEC_PACIB1716 "AARCH64_KEY_B")
+			    (UNSPEC_AUTIASP "AARCH64_KEY_A")
+			    (UNSPEC_AUTIBSP "AARCH64_KEY_B")
+			    (UNSPEC_AUTIA1716 "AARCH64_KEY_A")
+			    (UNSPEC_AUTIB1716 "AARCH64_KEY_B")])
+
+;; Pointer authentication HINT number for NOP space instructions using A and
+;; B key.
+(define_int_attr pauth_hint_num [(UNSPEC_PACIASP "25")
+				   (UNSPEC_PACIBSP "27")
+				   (UNSPEC_AUTIASP "29")
+				   (UNSPEC_AUTIBSP "31")
+				   (UNSPEC_PACIA1716 "8")
+				   (UNSPEC_PACIB1716 "10")
+				   (UNSPEC_AUTIA1716 "12")
+				   (UNSPEC_AUTIB1716 "14")])
 
 (define_int_attr perm_insn [(UNSPEC_ZIP1 "zip") (UNSPEC_ZIP2 "zip")
 			    (UNSPEC_TRN1 "trn") (UNSPEC_TRN2 "trn")

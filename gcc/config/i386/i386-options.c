@@ -209,7 +209,9 @@ ix86_target_string (HOST_WIDE_INT isa, HOST_WIDE_INT isa2,
     { "-mmovdir64b",	OPTION_MASK_ISA_MOVDIR64B },
     { "-mwaitpkg",	OPTION_MASK_ISA_WAITPKG },
     { "-mcldemote",	OPTION_MASK_ISA_CLDEMOTE },
-    { "-mptwrite",	OPTION_MASK_ISA_PTWRITE }
+    { "-mptwrite",	OPTION_MASK_ISA_PTWRITE },
+    { "-mavx512bf16",	OPTION_MASK_ISA_AVX512BF16 },
+    { "-menqcmd",       OPTION_MASK_ISA_ENQCMD }
   };
   static struct ix86_target_opts isa_opts[] =
   {
@@ -919,6 +921,8 @@ ix86_valid_target_attribute_inner_p (tree fndecl, tree args, char *p_strings[],
     IX86_ATTR_ISA ("waitpkg", OPT_mwaitpkg),
     IX86_ATTR_ISA ("cldemote", OPT_mcldemote),
     IX86_ATTR_ISA ("ptwrite",   OPT_mptwrite),
+    IX86_ATTR_ISA ("avx512bf16",   OPT_mavx512bf16),
+    IX86_ATTR_ISA ("enqcmd", OPT_menqcmd),
 
     /* enum options */
     IX86_ATTR_ENUM ("fpmath=",	OPT_mfpmath_),
@@ -1535,6 +1539,7 @@ ix86_init_machine_status (void)
 
   f = ggc_cleared_alloc<machine_function> ();
   f->call_abi = ix86_abi;
+  f->stack_frame_required = true;
 
   return f;
 }
@@ -2034,6 +2039,10 @@ ix86_option_override_internal (bool main_args_p,
 	    && !(opts->x_ix86_isa_flags_explicit
 		 & OPTION_MASK_ISA_AVX512VPOPCNTDQ))
 	  opts->x_ix86_isa_flags |= OPTION_MASK_ISA_AVX512VPOPCNTDQ;
+	if (((processor_alias_table[i].flags & PTA_AVX512BF16) != 0)
+	    && !(opts->x_ix86_isa_flags2_explicit
+		 & OPTION_MASK_ISA_AVX512BF16))
+	  opts->x_ix86_isa_flags2 |= OPTION_MASK_ISA_AVX512BF16;
 	if (((processor_alias_table[i].flags & PTA_SGX) != 0)
 	    && !(opts->x_ix86_isa_flags2_explicit & OPTION_MASK_ISA_SGX))
 	  opts->x_ix86_isa_flags2 |= OPTION_MASK_ISA_SGX;
@@ -2198,16 +2207,12 @@ ix86_option_override_internal (bool main_args_p,
 #define USE_IX86_FRAME_POINTER 0
 #endif
 
-#ifndef USE_X86_64_FRAME_POINTER
-#define USE_X86_64_FRAME_POINTER 0
-#endif
-
   /* Set the default values for switches whose default depends on TARGET_64BIT
      in case they weren't overwritten by command line options.  */
   if (TARGET_64BIT_P (opts->x_ix86_isa_flags))
     {
       if (opts->x_optimize >= 1 && !opts_set->x_flag_omit_frame_pointer)
-	opts->x_flag_omit_frame_pointer = !USE_X86_64_FRAME_POINTER;
+	opts->x_flag_omit_frame_pointer = !USE_IX86_FRAME_POINTER;
       if (opts->x_flag_asynchronous_unwind_tables
 	  && !opts_set->x_flag_unwind_tables
 	  && TARGET_64BIT_MS_ABI)
@@ -2548,54 +2553,6 @@ ix86_option_override_internal (bool main_args_p,
      can be opts->x_optimized to ap = __builtin_next_arg (0).  */
   if (!TARGET_64BIT_P (opts->x_ix86_isa_flags) && !opts->x_flag_split_stack)
     targetm.expand_builtin_va_start = NULL;
-
-  if (TARGET_64BIT_P (opts->x_ix86_isa_flags))
-    {
-      ix86_gen_leave = gen_leave_rex64;
-      if (Pmode == DImode)
-	{
-	  ix86_gen_tls_global_dynamic_64 = gen_tls_global_dynamic_64_di;
-	  ix86_gen_tls_local_dynamic_base_64
-	    = gen_tls_local_dynamic_base_64_di;
-	}
-      else
-	{
-	  ix86_gen_tls_global_dynamic_64 = gen_tls_global_dynamic_64_si;
-	  ix86_gen_tls_local_dynamic_base_64
-	    = gen_tls_local_dynamic_base_64_si;
-	}
-    }
-  else
-    ix86_gen_leave = gen_leave;
-
-  if (Pmode == DImode)
-    {
-      ix86_gen_add3 = gen_adddi3;
-      ix86_gen_sub3 = gen_subdi3;
-      ix86_gen_sub3_carry = gen_subdi3_carry;
-      ix86_gen_one_cmpl2 = gen_one_cmpldi2;
-      ix86_gen_andsp = gen_anddi3;
-      ix86_gen_allocate_stack_worker = gen_allocate_stack_worker_probe_di;
-      ix86_gen_adjust_stack_and_probe = gen_adjust_stack_and_probedi;
-      ix86_gen_probe_stack_range = gen_probe_stack_rangedi;
-      ix86_gen_monitor = gen_sse3_monitor_di;
-      ix86_gen_monitorx = gen_monitorx_di;
-      ix86_gen_clzero = gen_clzero_di;
-    }
-  else
-    {
-      ix86_gen_add3 = gen_addsi3;
-      ix86_gen_sub3 = gen_subsi3;
-      ix86_gen_sub3_carry = gen_subsi3_carry;
-      ix86_gen_one_cmpl2 = gen_one_cmplsi2;
-      ix86_gen_andsp = gen_andsi3;
-      ix86_gen_allocate_stack_worker = gen_allocate_stack_worker_probe_si;
-      ix86_gen_adjust_stack_and_probe = gen_adjust_stack_and_probesi;
-      ix86_gen_probe_stack_range = gen_probe_stack_rangesi;
-      ix86_gen_monitor = gen_sse3_monitor_si;
-      ix86_gen_monitorx = gen_monitorx_si;
-      ix86_gen_clzero = gen_clzero_si;
-    }
 
 #ifdef USE_IX86_CLD
   /* Use -mcld by default for 32-bit code if configured with --enable-cld.  */
@@ -3460,7 +3417,8 @@ ix86_handle_abi_attribute (tree *node, tree name, tree, int,
     {
       if (lookup_attribute ("sysv_abi", TYPE_ATTRIBUTES (*node)))
         {
-	  error ("ms_abi and sysv_abi attributes are not compatible");
+	  error ("%qs and %qs attributes are not compatible",
+		 "ms_abi", "sysv_abi");
 	}
 
       return NULL_TREE;
@@ -3469,7 +3427,8 @@ ix86_handle_abi_attribute (tree *node, tree name, tree, int,
     {
       if (lookup_attribute ("ms_abi", TYPE_ATTRIBUTES (*node)))
         {
-	  error ("ms_abi and sysv_abi attributes are not compatible");
+	  error ("%qs and %qs attributes are not compatible",
+		 "ms_abi", "sysv_abi");
 	}
 
       return NULL_TREE;
@@ -3580,7 +3539,7 @@ ix86_handle_interrupt_attribute (tree *node, tree, tree, int, bool *)
     error ("interrupt service routine can only have a pointer argument "
 	   "and an optional integer argument");
   if (! VOID_TYPE_P (return_type))
-    error ("interrupt service routine can%'t have non-void return value");
+    error ("interrupt service routine must return %<void%>");
 
   return NULL_TREE;
 }

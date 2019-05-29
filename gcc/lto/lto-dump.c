@@ -60,7 +60,8 @@ struct symbol_entry
     const char *type_name = node->get_symtab_type_string ();
     const char *visibility = node->get_visibility_string ();
     size_t sz = get_size ();
-    printf ("%s  %s  %4lu  %s  ", type_name, visibility, sz, name);
+    printf ("%s  %s  %4" PRIu64 "  %s  ", type_name, visibility, (uint64_t) sz,
+	    name);
   }
 };
 
@@ -319,7 +320,8 @@ lto_main (void)
 	node->get_untransformed_body ();
       if (!GATHER_STATISTICS)
 	warning_at (input_location, 0,
-		    "Not configured with --enable-gather-detailed-mem-stats.");
+		    "Not configured with "
+		    "%<--enable-gather-detailed-mem-stats%>.");
       else
 	dump_gimple_statistics ();
     }
@@ -328,7 +330,8 @@ lto_main (void)
       /* Dump tree statistics.  */
       if (!GATHER_STATISTICS)
 	warning_at (input_location, 0,
-		    "Not configured with --enable-gather-detailed-mem-stats.");
+		    "Not configured with "
+		    "%<--enable-gather-detailed-mem-stats%>.");
       else
 	{
 	  printf ("Tree Statistics\n");
