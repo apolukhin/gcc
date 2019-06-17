@@ -1,4 +1,5 @@
-// { dg-do compile { target c++11 } }
+// { dg-options "-std=gnu++2a" }
+// { dg-do compile { target c++2a } }
 //
 // Copyright (C) 2019 Free Software Foundation, Inc.
 //

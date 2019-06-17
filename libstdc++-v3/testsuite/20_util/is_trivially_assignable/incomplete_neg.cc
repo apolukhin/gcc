@@ -17,7 +17,7 @@
 // with this library; see the file COPYING3.  If not see
 // <http://www.gnu.org/licenses/>.
 
-// { dg-error "must be a complete class" "" { target *-*-* } 0 }
+// { dg-error "complete" "" { target *-*-* } 0 }
 
 #include <type_traits>
 
@@ -25,7 +25,7 @@ class X;
 
 void test01()
 {
-  std::is_trivially_assignable<X, int>();		// { dg-error "required from here" }
-  std::is_trivially_assignable<int, X>();		// { dg-error "required from here" }
+  std::is_trivially_assignable<X, int>();	// { dg-error "required from here" }
+  std::is_trivially_assignable<int, X>();	// { dg-error "required from here" }
   std::is_trivially_assignable<X, X>();		// { dg-error "required from here" }
 }
