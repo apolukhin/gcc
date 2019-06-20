@@ -8372,6 +8372,15 @@ attr_decl1 (void)
      to the first component, or '_data' field.  */
   if (sym->ts.type == BT_CLASS && sym->ts.u.derived->attr.is_class)
     {
+      /* gfc_set_array_spec sets sym->attr not CLASS_DATA(sym)->attr.  Check
+	 for duplicate attribute here.  */
+      if (CLASS_DATA(sym)->attr.dimension == 1 && as)
+	{
+	  gfc_error ("Duplicate DIMENSION attribute at %C");
+	  m = MATCH_ERROR;
+	  goto cleanup;
+	}
+
       if (!gfc_copy_attr (&CLASS_DATA(sym)->attr, &current_attr, &var_locus))
 	{
 	  m = MATCH_ERROR;
@@ -10192,6 +10201,13 @@ gfc_match_derived_decl (void)
   if (!gensym->attr.function
       && !gfc_add_function (&gensym->attr, gensym->name, NULL))
     return MATCH_ERROR;
+
+  if (gensym->attr.dummy)
+    {
+      gfc_error ("Dummy argument %qs at %L cannot be a derived type at %C",
+		 name, &gensym->declared_at);
+      return MATCH_ERROR;
+    }
 
   sym = gfc_find_dt_in_generic (gensym);
 

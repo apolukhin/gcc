@@ -3739,8 +3739,11 @@ Type_conversion_expression::do_flatten(Gogo*, Named_object*,
       this->expr_ = Expression::make_temporary_reference(temp, this->location());
     }
 
-  // For interface conversion, decide if we can allocate on stack.
-  if (this->type()->interface_type() != NULL)
+  // For interface conversion and string to/from slice conversions,
+  // decide if we can allocate on stack.
+  if (this->type()->interface_type() != NULL
+      || this->type()->is_string_type()
+      || this->expr_->type()->is_string_type())
     {
       Node* n = Node::make_node(this);
       if ((n->encoding() & ESCAPE_MASK) == Node::ESCAPE_NONE)
@@ -3984,9 +3987,21 @@ Type_conversion_expression::do_get_backend(Translate_context* context)
 	  return se->get_backend(context);
 	}
 
+      Expression* buf;
+      if (this->no_escape_)
+        {
+          Type* byte_type = Type::lookup_integer_type("uint8");
+          Expression* buflen =
+            Expression::make_integer_ul(4, NULL, loc);
+          Type* array_type = Type::make_array_type(byte_type, buflen);
+          buf = Expression::make_allocation(array_type, loc);
+          buf->allocation_expression()->set_allocate_on_stack();
+          buf->allocation_expression()->set_no_zero();
+        }
+      else
+        buf = Expression::make_nil(loc);
       Expression* i2s_expr =
-          Runtime::make_call(Runtime::INTSTRING, loc, 2,
-			     Expression::make_nil(loc), this->expr_);
+        Runtime::make_call(Runtime::INTSTRING, loc, 2, buf, this->expr_);
       return Expression::make_cast(type, i2s_expr, loc)->get_backend(context);
     }
   else if (type->is_string_type() && expr_type->is_slice_type())
@@ -4019,7 +4034,21 @@ Type_conversion_expression::do_get_backend(Translate_context* context)
           go_assert(e->integer_type()->is_rune());
           code = Runtime::SLICERUNETOSTRING;
         }
-      return Runtime::make_call(code, loc, 2, Expression::make_nil(loc),
+
+      Expression* buf;
+      if (this->no_escape_)
+        {
+          Type* byte_type = Type::lookup_integer_type("uint8");
+          Expression* buflen =
+            Expression::make_integer_ul(tmp_string_buf_size, NULL, loc);
+          Type* array_type = Type::make_array_type(byte_type, buflen);
+          buf = Expression::make_allocation(array_type, loc);
+          buf->allocation_expression()->set_allocate_on_stack();
+          buf->allocation_expression()->set_no_zero();
+        }
+      else
+        buf = Expression::make_nil(loc);
+      return Runtime::make_call(code, loc, 2, buf,
 				this->expr_)->get_backend(context);
     }
   else if (type->is_slice_type() && expr_type->is_string_type())
@@ -4035,9 +4064,20 @@ Type_conversion_expression::do_get_backend(Translate_context* context)
 	  go_assert(e->integer_type()->is_rune());
 	  code = Runtime::STRINGTOSLICERUNE;
 	}
-      Expression* s2a = Runtime::make_call(code, loc, 2,
-					   Expression::make_nil(loc),
-					   this->expr_);
+
+      Expression* buf;
+      if (this->no_escape_)
+        {
+          Expression* buflen =
+            Expression::make_integer_ul(tmp_string_buf_size, NULL, loc);
+          Type* array_type = Type::make_array_type(e, buflen);
+          buf = Expression::make_allocation(array_type, loc);
+          buf->allocation_expression()->set_allocate_on_stack();
+          buf->allocation_expression()->set_no_zero();
+        }
+      else
+        buf = Expression::make_nil(loc);
+      Expression* s2a = Runtime::make_call(code, loc, 2, buf, this->expr_);
       return Expression::make_unsafe_cast(type, s2a, loc)->get_backend(context);
     }
   else if (type->is_numeric_type())
@@ -7110,6 +7150,12 @@ Binary_expression::do_import(Import_expression* imp, Location loc)
       op = OPERATOR_BITCLEAR;
       imp->advance(4);
     }
+  else if (imp->match_c_string(")"))
+    {
+      // Not a binary operator after all.
+      imp->advance(1);
+      return left;
+    }
   else
     {
       go_error_at(imp->location(), "unrecognized binary operator");
@@ -7396,63 +7442,77 @@ String_concat_expression::do_check_types(Gogo*)
 
 Expression*
 String_concat_expression::do_flatten(Gogo*, Named_object*,
-				     Statement_inserter*)
+				     Statement_inserter* inserter)
 {
   if (this->is_error_expression())
     return this;
   Location loc = this->location();
   Type* type = this->type();
-  Expression* nil_arg = Expression::make_nil(loc);
-  Expression* call;
-  switch (this->exprs_->size())
+
+  // Mark string([]byte) operands to reuse the backing store.
+  // runtime.concatstrings does not keep the reference.
+  //
+  // Note: in the gc runtime, if all but one inputs are empty,
+  // concatstrings returns the only nonempty input without copy.
+  // So it is not safe to reuse the backing store if it is a
+  // string([]byte) conversion. So the gc compiler does the
+  // no-copy optimization only when there is at least one
+  // constant nonempty input. Currently the gccgo runtime
+  // doesn't do this, so we don't do the check.
+  for (Expression_list::iterator p = this->exprs_->begin();
+       p != this->exprs_->end();
+       ++p)
     {
-    case 0: case 1:
-      go_unreachable();
-
-    case 2: case 3: case 4: case 5:
-      {
-	Expression* len = Expression::make_integer_ul(this->exprs_->size(),
-						      NULL, loc);
-	Array_type* arg_type = Type::make_array_type(type, len);
-	arg_type->set_is_array_incomparable();
-	Expression* arg =
-	  Expression::make_array_composite_literal(arg_type, this->exprs_,
-						   loc);
-	Runtime::Function code;
-	switch (this->exprs_->size())
-	  {
-	  default:
-	    go_unreachable();
-	  case 2:
-	    code = Runtime::CONCATSTRING2;
-	    break;
-	  case 3:
-	    code = Runtime::CONCATSTRING3;
-	    break;
-	  case 4:
-	    code = Runtime::CONCATSTRING4;
-	    break;
-	  case 5:
-	    code = Runtime::CONCATSTRING5;
-	    break;
-	  }
-	call = Runtime::make_call(code, loc, 2, nil_arg, arg);
-      }
-      break;
-
-    default:
-      {
-	Type* arg_type = Type::make_array_type(type, NULL);
-	Slice_construction_expression* sce =
-	  Expression::make_slice_composite_literal(arg_type, this->exprs_,
-						   loc);
-	sce->set_storage_does_not_escape();
-	call = Runtime::make_call(Runtime::CONCATSTRINGS, loc, 2, nil_arg,
-				  sce);
-      }
-      break;
+      Type_conversion_expression* tce = (*p)->conversion_expression();
+      if (tce != NULL)
+        tce->set_no_copy(true);
     }
 
+  Expression* buf = NULL;
+  Node* n = Node::make_node(this);
+  if ((n->encoding() & ESCAPE_MASK) == Node::ESCAPE_NONE)
+    {
+      size_t size = 0;
+      for (Expression_list::iterator p = this->exprs_->begin();
+           p != this->exprs_->end();
+           ++p)
+        {
+          std::string s;
+          if ((*p)->string_constant_value(&s))
+            size += s.length();
+        }
+      // Make a buffer on stack if the result does not escape.
+      // But don't do this if we know it won't fit.
+      if (size < (size_t)tmp_string_buf_size)
+        {
+          Type* byte_type = Type::lookup_integer_type("uint8");
+          Expression* buflen =
+            Expression::make_integer_ul(tmp_string_buf_size, NULL, loc);
+          Expression::make_integer_ul(tmp_string_buf_size, NULL, loc);
+          Type* array_type = Type::make_array_type(byte_type, buflen);
+          buf = Expression::make_allocation(array_type, loc);
+          buf->allocation_expression()->set_allocate_on_stack();
+          buf->allocation_expression()->set_no_zero();
+        }
+    }
+  if (buf == NULL)
+    buf = Expression::make_nil(loc);
+  go_assert(this->exprs_->size() > 1);
+  Expression* len =
+    Expression::make_integer_ul(this->exprs_->size(), NULL, loc);
+  Array_type* array_type = Type::make_array_type(type, len);
+  array_type->set_is_array_incomparable();
+  Expression* array =
+    Expression::make_array_composite_literal(array_type, this->exprs_,
+                                             loc);
+  Temporary_statement* ts =
+    Statement::make_temporary(array_type, array, loc);
+  inserter->insert(ts);
+  Expression* ref = Expression::make_temporary_reference(ts, loc);
+  ref = Expression::make_unary(OPERATOR_AND, ref, loc);
+	Expression* call =
+    Runtime::make_call(Runtime::CONCATSTRINGS, loc, 3, buf,
+                       ref, len->copy());
   return Expression::make_cast(type, call, loc);
 }
 
@@ -12808,6 +12868,38 @@ Array_index_expression::do_get_backend(Translate_context* context)
   return ret;
 }
 
+// Export an array index expression.
+
+void
+Array_index_expression::do_export(Export_function_body* efb) const
+{
+  efb->write_c_string("(");
+  this->array_->export_expression(efb);
+  efb->write_c_string(")[");
+
+  Type* old_context = efb->type_context();
+  efb->set_type_context(Type::lookup_integer_type("int"));
+
+  this->start_->export_expression(efb);
+  if (this->end_ == NULL)
+    go_assert(this->cap_ == NULL);
+  else
+    {
+      efb->write_c_string(":");
+      if (!this->end_->is_nil_expression())
+	this->end_->export_expression(efb);
+      if (this->cap_ != NULL)
+	{
+	  efb->write_c_string(":");
+	  this->cap_->export_expression(efb);
+	}
+    }
+
+  efb->set_type_context(old_context);
+
+  efb->write_c_string("]");
+}
+
 // Dump ast representation for an array index expression.
 
 void
@@ -13066,6 +13158,31 @@ String_index_expression::do_get_backend(Translate_context* context)
   Bexpression* index_error = bad_index->get_backend(context);
   return gogo->backend()->conditional_expression(bfn, str_btype, index_error,
 						 crash, bstrslice, loc);
+}
+
+// Export a string index expression.
+
+void
+String_index_expression::do_export(Export_function_body* efb) const
+{
+  efb->write_c_string("(");
+  this->string_->export_expression(efb);
+  efb->write_c_string(")[");
+
+  Type* old_context = efb->type_context();
+  efb->set_type_context(Type::lookup_integer_type("int"));
+
+  this->start_->export_expression(efb);
+  if (this->end_ != NULL)
+    {
+      efb->write_c_string(":");
+      if (!this->end_->is_nil_expression())
+	this->end_->export_expression(efb);
+    }
+
+  efb->set_type_context(old_context);
+
+  efb->write_c_string("]");
 }
 
 // Dump ast representation for a string index expression.
@@ -13336,6 +13453,25 @@ Map_index_expression::get_value_pointer(Gogo* gogo)
     }
 
   return this->value_pointer_;
+}
+
+// Export a map index expression.
+
+void
+Map_index_expression::do_export(Export_function_body* efb) const
+{
+  efb->write_c_string("(");
+  this->map_->export_expression(efb);
+  efb->write_c_string(")[");
+
+  Type* old_context = efb->type_context();
+  efb->set_type_context(this->get_map_type()->key_type());
+
+  this->index_->export_expression(efb);
+
+  efb->set_type_context(old_context);
+
+  efb->write_c_string("]");
 }
 
 // Dump ast representation for a map index expression
@@ -14152,6 +14288,8 @@ Allocation_expression::do_copy()
 			      this->location());
   if (this->allocate_on_stack_)
     alloc->set_allocate_on_stack();
+  if (this->no_zero_)
+    alloc->set_no_zero();
   return alloc;
 }
 
@@ -14177,10 +14315,12 @@ Allocation_expression::do_get_backend(Translate_context* context)
       Named_object* fn = context->function();
       go_assert(fn != NULL);
       Bfunction* fndecl = fn->func_value()->get_or_make_decl(gogo, fn);
-      Bexpression* zero = gogo->backend()->zero_expression(btype);
+      Bexpression* init = (this->no_zero_
+                           ? NULL
+                           : gogo->backend()->zero_expression(btype));
       Bvariable* temp =
         gogo->backend()->temporary_variable(fndecl, context->bblock(), btype,
-                                            zero, true, loc, &decl);
+                                            init, true, loc, &decl);
       Bexpression* ret = gogo->backend()->var_expression(temp, loc);
       ret = gogo->backend()->address_expression(ret, loc);
       ret = gogo->backend()->compound_expression(decl, ret, loc);
@@ -16387,17 +16527,43 @@ Heap_expression::do_get_backend(Translate_context* context)
 					    &edecl);
       Bexpression* btempref = gogo->backend()->var_expression(btemp,
 							      loc);
-      Bexpression* addr = gogo->backend()->address_expression(btempref, loc);
-
-      Expression* td = Expression::make_type_descriptor(etype, loc);
-      Type* etype_ptr = Type::make_pointer_type(etype);
       space = gogo->backend()->var_expression(space_temp, loc);
+      Type* etype_ptr = Type::make_pointer_type(etype);
       Expression* elhs = Expression::make_backend(space, etype_ptr, loc);
-      Expression* erhs = Expression::make_backend(addr, etype_ptr, loc);
-      Expression* call = Runtime::make_call(Runtime::TYPEDMEMMOVE, loc, 3,
-					    td, elhs, erhs);
-      Bexpression* bcall = call->get_backend(context);
-      Bstatement* s = gogo->backend()->expression_statement(fndecl, bcall);
+      Expression* erhs;
+      Expression* call;
+      if (etype->is_direct_iface_type())
+        {
+          // Single pointer.
+          Type* uintptr_type = Type::lookup_integer_type("uintptr");
+          erhs = Expression::make_backend(btempref, etype, loc);
+          erhs = Expression::unpack_direct_iface(erhs, loc);
+          erhs = Expression::make_unsafe_cast(uintptr_type, erhs, loc);
+          call = Runtime::make_call(Runtime::GCWRITEBARRIER, loc, 2,
+                                    elhs, erhs);
+        }
+      else
+        {
+          Expression* td = Expression::make_type_descriptor(etype, loc);
+          Bexpression* addr =
+            gogo->backend()->address_expression(btempref, loc);
+          erhs = Expression::make_backend(addr, etype_ptr, loc);
+          call = Runtime::make_call(Runtime::TYPEDMEMMOVE, loc, 3,
+                                    td, elhs, erhs);
+        }
+      Statement* cs = Statement::make_statement(call, false);
+
+      space = gogo->backend()->var_expression(space_temp, loc);
+      Bexpression* ref =
+        gogo->backend()->indirect_expression(expr_btype, space, true, loc);
+      Expression* eref = Expression::make_backend(ref, etype, loc);
+      btempref = gogo->backend()->var_expression(btemp, loc);
+      erhs = Expression::make_backend(btempref, etype, loc);
+      Statement* as = Statement::make_assignment(eref, erhs, loc);
+
+      as = gogo->check_write_barrier(context->block(), as, cs);
+      Bstatement* s = as->get_backend(context);
+
       assn = gogo->backend()->compound_statement(edecl, s);
     }
   decl = gogo->backend()->compound_statement(decl, assn);
@@ -17947,6 +18113,29 @@ Expression::import_expression(Import_expression* imp, Location loc)
 	    }
 	  imp->require_c_string(")");
 	  expr = Expression::make_call(expr, args, is_varargs, loc);
+	}
+      else if (imp->match_c_string("["))
+	{
+	  imp->advance(1);
+	  Expression* start = Expression::import_expression(imp, loc);
+	  Expression* end = NULL;
+	  Expression* cap = NULL;
+	  if (imp->match_c_string(":"))
+	    {
+	      imp->advance(1);
+	      int c = imp->peek_char();
+	      if (c == ':' || c == ']')
+		end = Expression::make_nil(loc);
+	      else
+		end = Expression::import_expression(imp, loc);
+	      if (imp->match_c_string(":"))
+		{
+		  imp->advance(1);
+		  cap = Expression::import_expression(imp, loc);
+		}
+	    }
+	  imp->require_c_string("]");
+	  expr = Expression::make_index(expr, start, end, cap, loc);
 	}
       else
 	break;
