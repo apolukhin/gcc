@@ -1,4 +1,4 @@
-// { dg-do compile { target c++11 } }
+// { dg-do compile { target c++17 } }
 //
 // Copyright (C) 2019 Free Software Foundation, Inc.
 //
