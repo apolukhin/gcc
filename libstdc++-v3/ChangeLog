@@ -1,3 +1,28 @@
+2019-06-20  Antony Polukhin  <antoshkka@gmail.com>
+
+	PR libstdc++/71579
+	* include/std/type_traits (is_assignable, is_nothrow_assignable)
+	(is_trivially_assignable, is_nothrow_invocable_r): Add static_asserts
+	to make sure that the second argument of the type trait is not misused
+	with incomplete types.
+	(is_convertible, is_nothrow_convertible, is_swappable_with)
+	(is_nothrow_swappable_with): Add static_asserts to make sure that the
+	first and second arguments of the type trait are not misused with
+	incomplete types.
+	invoke_result: Add static_asserts to make sure that the first argument
+	of the type trait is not misused with incomplete types.
+	* testsuite/20_util/invoke_result/incomplete_neg.cc: New test.
+	* testsuite/20_util/is_assignable/incomplete_neg.cc: New test.
+	* testsuite/20_util/is_convertible/incomplete_neg.cc: New test.
+	* testsuite/20_util/is_nothrow_assignable/incomplete_neg.cc: New test.
+	* testsuite/20_util/is_nothrow_convertible/incomplete_neg.cc: New test.
+	* testsuite/20_util/is_nothrow_swappable/incomplete_neg.cc: New test.
+	* testsuite/20_util/is_nothrow_swappable_with/incomplete_neg.cc: New
+	test.
+	* testsuite/20_util/is_swappable/incomplete_neg.cc: New test.
+	* testsuite/20_util/is_swappable_with/incomplete_neg.cc: New test.
+	* testsuite/20_util/is_trivially_assignable/incomplete_neg.cc: New test.
+
 2019-06-20  Jonathan Wakely  <jwakely@redhat.com>
 
 	* acinclude.m4 (GLIBCXX_ENABLE_DEBUG): Only do debug build for final
