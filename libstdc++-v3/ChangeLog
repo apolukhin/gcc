@@ -5,9 +5,12 @@
 	with arithmetic operations to avoid CPU	cache misses. Remove
 	zero termination from array of digits to allow symbol merge with
 	generic implementation of __detail::__to_chars. Replace final
-	offsets with constants.
+	offsets with constants. Use __detail::__to_chars_len_2 instead
+	of a generic __detail::__to_chars_len.
 	* include/std/charconv (__detail::__to_chars): Remove
 	zero termination from array of digits.
+	* include/std/charconv (__detail::__to_chars_2): Leading digit
+	is always '1'.
 
 2019-08-29  Jonathan Wakely  <jwakely@redhat.com>
 

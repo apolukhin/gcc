@@ -131,7 +131,7 @@ namespace __detail
 	    : 1u;
 	}
       else
-	return __to_chars_len(__value, 8);
+	return (__to_chars_len_2(__value) + 2) / 3;
     }
 
   // Generic implementation for arbitrary bases.
@@ -185,7 +185,7 @@ namespace __detail
 
       to_chars_result __res;
 
-      const unsigned __len = __to_chars_len(__val, 0x10);
+      const unsigned __len = (__to_chars_len_2(__val) + 3) / 4;
 
       if (__builtin_expect((__last - __first) < __len, 0))
 	{
@@ -315,7 +315,10 @@ namespace __detail
 	  __first[__pos--] = '0' + (__val & 1);
 	  __val >>= 1;
 	}
-      *__first = '0' + (__val & 1);
+      // First digit is always '1' because __to_chars_len_2 skips
+      // leading zero bits and std::to_chars handles zero values
+      // directly.
+      __first[0] = '1';
 
       __res.ptr = __first + __len;
       __res.ec = {};
