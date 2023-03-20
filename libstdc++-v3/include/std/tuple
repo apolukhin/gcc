@@ -41,7 +41,7 @@
 #include <bits/invoke.h>		// for std::__invoke
 #if __cplusplus > 201703L
 # include <compare>
-# include <bits/ranges_util.h>		// for std::ranges::subrange
+//# include <bits/ranges_util.h>		// for std::ranges::subrange
 # define __cpp_lib_constexpr_tuple 201811L
 #endif
 
@@ -56,6 +56,57 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   template<typename... _Elements>
     class tuple;
+
+  template <typename _Tp>
+    concept _TupleLikeAggregate = is_aggregate_v<_Tp>;
+
+  template<typename _Tp>
+    struct __elements_count;
+
+  template<typename _Tp>
+    using elements_count = __elements_count<_Tp>;
+
+  template<typename _Tp>
+    inline constexpr size_t elements_count_v = elements_count<_Tp>::value;
+
+
+
+  // Declarations of std::array and its std::get overloads, so that
+  // std::tuple_cat can use them if <tuple> is included before <array>.
+
+  template<typename _Tp, size_t _Nm> struct array;
+
+  template<size_t _Int, typename _Tp, size_t _Nm>
+    constexpr _Tp&
+    get(array<_Tp, _Nm>&) noexcept;
+
+  template<size_t _Int, typename _Tp, size_t _Nm>
+    constexpr _Tp&&
+    get(array<_Tp, _Nm>&&) noexcept;
+
+  template<size_t _Int, typename _Tp, size_t _Nm>
+    constexpr const _Tp&
+    get(const array<_Tp, _Nm>&) noexcept;
+
+  template<size_t _Int, typename _Tp, size_t _Nm>
+    constexpr const _Tp&&
+    get(const array<_Tp, _Nm>&&) noexcept;
+
+  template <size_t _Int, _TupleLikeAggregate _Tp>
+    constexpr tuple_element_t<_Int, _Tp>&
+    get(_Tp&) noexcept;
+
+  template <size_t _Int, _TupleLikeAggregate _Tp>
+    constexpr const tuple_element_t<_Int, _Tp>&
+    get(const _Tp&) noexcept;
+
+  template <size_t _Int, _TupleLikeAggregate _Tp>
+    constexpr tuple_element_t<_Int, _Tp>&&
+    get(_Tp&&) noexcept;
+
+  template <size_t _Int, _TupleLikeAggregate _Tp>
+    constexpr const tuple_element_t<_Int, _Tp>&&
+    get(const _Tp&&) noexcept;
 
   template<typename _Tp>
     struct __is_empty_non_tuple : is_empty<_Tp> { };
@@ -962,6 +1013,24 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	noexcept(__nothrow_constructible<const _UElements...>())
 	: _Inherited(static_cast<const _Tuple_impl<0, _UElements...>&&>(__in)) { }
 #endif // C++23
+
+  template <typename _Tuple, size_t... _Idx>
+    static constexpr tuple
+    __make_from_tuple_impl(_Tuple&& __t, index_sequence<_Idx...>)
+        noexcept(noexcept(
+            tuple(std::get<_Idx>(std::forward<_Tuple>(__t))...)
+        ))
+    { return tuple(std::get<_Idx>(std::forward<_Tuple>(__t))...); }
+
+      template<_TupleLikeAggregate _Aggr,
+	       bool _Valid = (sizeof...(_Elements) == elements_count_v<_Aggr>)
+	       /*_ImplicitCtor<_Valid, _UElements...> = true*/ >  // TODO:
+	constexpr
+	tuple(_Aggr&& __in)
+	    noexcept(noexcept(
+            __make_from_tuple_impl(std::forward<_Aggr>(__in), make_index_sequence<elements_count_v<_Aggr>>())
+        ))
+	: tuple(__make_from_tuple_impl(std::forward<_Aggr>(__in), make_index_sequence<elements_count_v<_Aggr>>())) { }
 
       // Allocator-extended constructors.
 
@@ -1999,27 +2068,6 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     forward_as_tuple(_Elements&&... __args) noexcept
     { return tuple<_Elements&&...>(std::forward<_Elements>(__args)...); }
 
-  // Declarations of std::array and its std::get overloads, so that
-  // std::tuple_cat can use them if <tuple> is included before <array>.
-
-  template<typename _Tp, size_t _Nm> struct array;
-
-  template<size_t _Int, typename _Tp, size_t _Nm>
-    constexpr _Tp&
-    get(array<_Tp, _Nm>&) noexcept;
-
-  template<size_t _Int, typename _Tp, size_t _Nm>
-    constexpr _Tp&&
-    get(array<_Tp, _Nm>&&) noexcept;
-
-  template<size_t _Int, typename _Tp, size_t _Nm>
-    constexpr const _Tp&
-    get(const array<_Tp, _Nm>&) noexcept;
-
-  template<size_t _Int, typename _Tp, size_t _Nm>
-    constexpr const _Tp&&
-    get(const array<_Tp, _Nm>&&) noexcept;
-
   /// @cond undocumented
   template<size_t, typename, typename, size_t>
     struct __make_tuple_impl;
@@ -2039,7 +2087,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   template<typename _Tuple>
     struct __do_make_tuple
-    : __make_tuple_impl<0, tuple<>, _Tuple, tuple_size<_Tuple>::value>
+    : __make_tuple_impl<0, tuple<>, _Tuple, elements_count<_Tuple>::value>
     { };
 
   // Returns the std::tuple equivalent of a tuple-like type.
@@ -2093,7 +2141,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   template<typename _Tp, typename... _Tpls>
     struct __make_1st_indices<_Tp, _Tpls...>
     {
-      typedef typename _Build_index_tuple<tuple_size<
+      typedef typename _Build_index_tuple<elements_count<
 	typename remove_reference<_Tp>::type>::value>::__type __type;
     };
 
@@ -2131,6 +2179,10 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   template<typename... _Tps>
     struct __is_tuple_like_impl<tuple<_Tps...>> : true_type
+    { };
+
+  template<_TupleLikeAggregate _Tp>
+    struct __is_tuple_like_impl<_Tp> : true_type
     { };
   /// @endcond
 
@@ -2295,7 +2347,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     noexcept(__unpack_std_tuple<is_nothrow_invocable, _Fn, _Tuple>)
     {
       using _Indices
-	= make_index_sequence<tuple_size_v<remove_reference_t<_Tuple>>>;
+	= make_index_sequence<elements_count_v<remove_reference_t<_Tuple>>>;
       return std::__apply_impl(std::forward<_Fn>(__f),
 			       std::forward<_Tuple>(__t),
 			       _Indices{});
@@ -2313,7 +2365,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     make_from_tuple(_Tuple&& __t)
     noexcept(__unpack_std_tuple<is_nothrow_constructible, _Tp, _Tuple>)
     {
-      constexpr size_t __n = tuple_size_v<remove_reference_t<_Tuple>>;
+      constexpr size_t __n = elements_count_v<remove_reference_t<_Tuple>>;
 #if __has_builtin(__reference_constructs_from_temporary)
       if constexpr (__n == 1)
 	{
@@ -2340,6 +2392,53 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 #endif // C++23
 
   /// @}
+
+_GLIBCXX_END_NAMESPACE_VERSION
+} // namespace std
+
+
+/////////////// P2141R1 implementation
+
+#include <boost/pfr/core.hpp>
+
+namespace std _GLIBCXX_VISIBILITY(default)
+{
+_GLIBCXX_BEGIN_NAMESPACE_VERSION
+
+  template<typename _Tp>
+  struct __elements_count : tuple_size<_Tp> {};
+
+  template<_TupleLikeAggregate _Tp>
+    requires requires { tuple_size<_Tp>{}; }
+  struct __elements_count<_Tp> : tuple_size<_Tp> {};
+
+  template<_TupleLikeAggregate _Tp>
+  struct __elements_count<_Tp> : boost::pfr::tuple_size<_Tp> {};
+
+  template <size_t _Ind, _TupleLikeAggregate _Tp>
+  struct tuple_element<_Ind, _Tp> {
+    using type = boost::pfr::tuple_element_t<_Ind, _Tp>;
+  };
+
+  template <size_t _Ind, _TupleLikeAggregate _Tp>
+  constexpr tuple_element_t<_Ind, _Tp>& get(_Tp& __x) noexcept {
+    return boost::pfr::get<_Ind>(__x);
+  }
+
+  template <size_t _Ind, _TupleLikeAggregate _Tp>
+  constexpr const tuple_element_t<_Ind, _Tp>& get(const _Tp& __x) noexcept {
+    return boost::pfr::get<_Ind>(__x);
+  }
+
+  template <size_t _Ind, _TupleLikeAggregate _Tp>
+  constexpr tuple_element_t<_Ind, _Tp>&& get(_Tp&& __x) noexcept {
+    return std::move(boost::pfr::get<_Ind>(__x));
+  }
+
+  template <size_t _Ind, _TupleLikeAggregate _Tp>
+  constexpr const tuple_element_t<_Ind, _Tp>&& get(const _Tp&& __x) noexcept {
+    return std::move(boost::pfr::get<_Ind>(__x));
+  }
 
 _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
