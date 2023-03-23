@@ -45,6 +45,8 @@
 # define __cpp_lib_constexpr_tuple 201811L
 #endif
 
+# define __cpp_lib_aggregates_as_tuples 202311L
+
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 _GLIBCXX_BEGIN_NAMESPACE_VERSION
@@ -904,6 +906,30 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	  = _TCC<true>::template __convertible<_Args...>::value;
 #endif // C++23
 
+      template <typename _Aggr, size_t... _Idx>
+    static constexpr tuple
+      __make_from_aggregate_impl(_Aggr&& __t, index_sequence<_Idx...>)
+        noexcept(noexcept(
+          tuple(std::get<_Idx>(std::forward<_Aggr>(__t))...)
+        ))
+      { return tuple(std::get<_Idx>(std::forward<_Aggr>(__t))...); }
+
+      template <_TupleLikeAggregate _Aggr, size_t... _Idx>
+    static constexpr bool
+      __is_implicitly_constructible(index_sequence<_Idx...>)
+        noexcept
+      {
+        return _TCC<true>::template __is_implicitly_constructible<
+          decltype(std::get<_Idx>(std::declval<_Aggr>()))...>();
+      }
+
+   template <typename _Tuple, typename _Aggr, size_t... _Idx>
+    static constexpr bool
+      __is_assignable_aggregate(_Aggr&& __aggr, index_sequence<_Idx...>)
+        noexcept
+      { return tuple(std::get<_Idx>(std::forward<_Aggr>(__aggr))...); }
+    
+
     public:
       template<typename _Dummy = void,
 	       _ImplicitDefaultCtor<is_void<_Dummy>::value> = true>
@@ -1014,23 +1040,16 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	: _Inherited(static_cast<const _Tuple_impl<0, _UElements...>&&>(__in)) { }
 #endif // C++23
 
-  template <typename _Tuple, size_t... _Idx>
-    static constexpr tuple
-    __make_from_tuple_impl(_Tuple&& __t, index_sequence<_Idx...>)
-        noexcept(noexcept(
-            tuple(std::get<_Idx>(std::forward<_Tuple>(__t))...)
-        ))
-    { return tuple(std::get<_Idx>(std::forward<_Tuple>(__t))...); }
-
       template<_TupleLikeAggregate _Aggr,
-	       bool _Valid = (sizeof...(_Elements) == elements_count_v<_Aggr>)
-	       /*_ImplicitCtor<_Valid, _UElements...> = true*/ >  // TODO:
+	       enable_if_t<(sizeof...(_Elements) == elements_count_v<_Aggr>)>* = nullptr
+	       >
 	constexpr
+      explicit(!__is_implicitly_constructible<_Aggr>(make_index_sequence<elements_count_v<_Aggr>>()))
 	tuple(_Aggr&& __in)
 	    noexcept(noexcept(
-            __make_from_tuple_impl(std::forward<_Aggr>(__in), make_index_sequence<elements_count_v<_Aggr>>())
+            __make_from_aggregate_impl(std::forward<_Aggr>(__in), make_index_sequence<elements_count_v<_Aggr>>())
         ))
-	: tuple(__make_from_tuple_impl(std::forward<_Aggr>(__in), make_index_sequence<elements_count_v<_Aggr>>())) { }
+	: tuple(__make_from_aggregate_impl(std::forward<_Aggr>(__in), make_index_sequence<elements_count_v<_Aggr>>())) { }
 
       // Allocator-extended constructors.
 
@@ -1237,6 +1256,16 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	  return *this;
 	}
 #endif // C++23
+
+      template<_TupleLikeAggregate _Aggr>
+	constexpr const tuple&
+	operator=(_Aggr&& __in) const
+	requires (sizeof...(_Elements) == elements_count_v<_Aggr>)
+	  && (is_assignable_v<const _Elements&, _Aggr> && ...) // TODO:
+	{
+	  this->_M_assign(std::move(__in));
+	  return *this;
+	}
 
       // tuple swap
       _GLIBCXX20_CONSTEXPR
@@ -2397,7 +2426,7 @@ _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
 
 
-/////////////// P2141R1 implementation
+/////////////// P2141R1 implementation. All the boost::pfr::* functions should be builtins
 
 #include <boost/pfr/core.hpp>
 
@@ -2406,13 +2435,11 @@ namespace std _GLIBCXX_VISIBILITY(default)
 _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   template<typename _Tp>
-  struct __elements_count : tuple_size<_Tp> {};
-
-  template<_TupleLikeAggregate _Tp>
     requires requires { tuple_size<_Tp>{}; }
   struct __elements_count<_Tp> : tuple_size<_Tp> {};
 
   template<_TupleLikeAggregate _Tp>
+    requires (!requires { tuple_size<_Tp>{}; })
   struct __elements_count<_Tp> : boost::pfr::tuple_size<_Tp> {};
 
   template <size_t _Ind, _TupleLikeAggregate _Tp>
