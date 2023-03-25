@@ -187,7 +187,12 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     _GLIBCXX20_CONSTEXPR
     inline
 #if __cplusplus >= 201103L
-    typename enable_if<__and_<__not_<__is_tuple_like<_Tp>>,
+    typename enable_if<__and_<
+#ifdef __cpp_lib_aggregates_as_tuples
+			      __or<__not_<__is_tuple_like<_Tp>>, is_aggreagate<_Tp>>,
+#else
+			      __not_<__is_tuple_like<_Tp>>,
+#endif
 			      is_move_constructible<_Tp>,
 			      is_move_assignable<_Tp>>::value>::type
 #else

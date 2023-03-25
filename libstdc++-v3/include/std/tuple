@@ -56,10 +56,10 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    *  @{
    */
 
-#ifdef __cpp_lib_aggregates_as_tuples
   template<typename... _Elements>
     class tuple;
 
+#ifdef __cpp_lib_aggregates_as_tuples
   template <typename _Tp>
     concept _TupleLikeAggregate = is_aggregate_v<remove_cv_t<remove_reference_t<_Tp>>>;
 
