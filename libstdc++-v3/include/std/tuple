@@ -41,7 +41,7 @@
 #include <bits/invoke.h>		// for std::__invoke
 #if __cplusplus > 201703L
 # include <compare>
-//# include <bits/ranges_util.h>		// for std::ranges::subrange
+# include <bits/ranges_util.h>		// for std::ranges::subrange
 # define __cpp_lib_constexpr_tuple 201811L
 # define __cpp_lib_aggregates_as_tuples 202311L
 #endif
