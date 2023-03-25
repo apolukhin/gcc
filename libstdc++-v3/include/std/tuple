@@ -2527,6 +2527,10 @@ _GLIBCXX_END_NAMESPACE_VERSION
 
 #ifdef __cpp_lib_aggregates_as_tuples
 
+// Use the following to compile and test:
+// CPLUS_INCLUDE_PATH=/data/code/boost/libs/pfr/include/ make -j4 bootstrap-lean
+// CPLUS_INCLUDE_PATH=/data/code/boost/libs/pfr/include/ make check-target-libstdc++-v3 RUNTESTFLAGS="conformance.exp=20_util/*"
+
 #include <boost/pfr/core.hpp>
 
 namespace std _GLIBCXX_VISIBILITY(default)
