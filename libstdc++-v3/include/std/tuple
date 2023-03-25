@@ -2296,17 +2296,18 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   template<typename... _Tps>
     struct __is_tuple_like_impl<tuple<_Tps...>> : true_type
     { };
-
-#ifdef __cpp_lib_aggregates_as_tuples
-  template<_TupleLikeAggregate _Tp>
-    struct __is_tuple_like_impl<_Tp> : true_type
-    { };
-#endif
   /// @endcond
 
   /// Create a `tuple` containing all elements from multiple tuple-like objects
   template<typename... _Tpls, typename = typename
-           enable_if<__and_<__is_tuple_like<_Tpls>...>::value>::type>
+           enable_if<__and_<
+
+#ifdef __cpp_lib_aggregates_as_tuples
+              __or_<__is_tuple_like<_Tpls>, __bool_constant<_TupleLikeAggregate<_Tpls>>>...
+#else
+              __is_tuple_like<_Tpls>...
+#endif
+           >::value>::type>
     constexpr auto
     tuple_cat(_Tpls&&... __tpls)
     -> typename __tuple_cat_result<_Tpls...>::__type
