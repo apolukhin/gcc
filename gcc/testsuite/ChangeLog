@@ -1,3 +1,359 @@
+2023-03-24  Patrick Palka  <ppalka@redhat.com>
+
+	PR c++/106969
+	* g++.dg/lookup/name-clash11.C: Fix ASSERT macro definition in
+	C++98 mode.
+	* g++.dg/lookup/this2.C: New test.
+
+2023-03-24  Jason Merrill  <jason@redhat.com>
+
+	PR c++/105481
+	* g++.dg/cpp0x/fntmpdefarg-partial1.C: New test.
+
+2023-03-24  David Malcolm  <dmalcolm@redhat.com>
+
+	PR other/109163
+	* c-c++-common/diagnostic-format-json-1.c: Update comment.
+	* c-c++-common/diagnostic-format-json-2.c: Likewise.
+	* c-c++-common/diagnostic-format-json-3.c: Likewise.
+	* c-c++-common/diagnostic-format-json-4.c: Likewise.
+	* c-c++-common/diagnostic-format-json-5.c: Rewrite regexps.
+	* c-c++-common/diagnostic-format-json-stderr-1.c: Update comment.
+
+2023-03-24  Andrew MacLeod  <amacleod@redhat.com>
+
+	PR tree-optimization/109238
+	* gcc.dg/pr109238.c: New.
+
+2023-03-24  Richard Biener  <rguenther@suse.de>
+
+	PR tree-optimization/106912
+	* gcc.dg/profile-generate-4.c: New testcase.
+
+2023-03-24  Gaius Mulley  <gaiusmod2@gmail.com>
+
+	* gm2/projects/iso/small/run/pass/iso-extended-opaque-run-pass.exp:
+	Compile object for stressset.mod and testlib.mod.  Add test so
+	that we only link these	objects with test application objects.
+
+2023-03-24  Jakub Jelinek  <jakub@redhat.com>
+
+	PR target/109137
+	* gcc.target/i386/pr109137.c: Remove -m32 from dg-options, instead
+	require ia32 effective target.  Only add -fPIC for fpic effective
+	target.  Remove #include <string.h>, use __builtin_memset instead of
+	memset.
+
+2023-03-24  Jakub Jelinek  <jakub@redhat.com>
+
+	PR tree-optimization/99739
+	* gcc.dg/tree-ssa/pr99739.c: New test.
+
+2023-03-24  Alexandre Oliva  <oliva@adacore.com>
+
+	* lib/target-supports.exp (add_options_for_weak_undefined):
+	New.
+	(check_effective_target_weak_undefined): Use it.
+	(check_effective_target_posix_memalign): New.
+	* gcc.dg/torture/pr53922.c: Drop skips and custom options in
+	favor of effective target requirement and added options for
+	weak_undefined symbols.
+	* gcc.dg/torture/pr90020.c: Likewise.
+	* gcc.dg/addr_equal-1.c: Likewise.
+	* gcc.target/aarch64/aapcs64/aapcs64.exp: Likewise, for
+	abitest.S-using tests.
+	* gcc.dg/torture/pr60092.c: Likewise, but in favor of
+	posix_memalign tests.
+	* gcc.dg/vect/vect-tail-nomask-1.c: Likewise.
+
+2023-03-24  Haochen Gui  <guihaoc@gcc.gnu.org>
+	    Tobias Burnus  <tobias@codesourcery.com>
+
+	PR target/103628
+	* gfortran.dg/assumed_size_refs_2.f90: Check "Cannot simplify
+	expression" error.
+	* gfortran.dg/unpack_field_1.f90: Likewise.
+	* gfortran.dg/pr103628.f90: New.
+
+2023-03-23  Jason Merrill  <jason@redhat.com>
+
+	PR c++/105996
+	* g++.dg/cpp0x/constexpr-pmf3.C: New test.
+
+2023-03-23  Hans-Peter Nilsson  <hp@axis.com>
+
+	* gcc.dg/tree-ssa/ssa-fre-100.c: XFAIL for ! natural_alignment_32.
+
+2023-03-23  Hans-Peter Nilsson  <hp@axis.com>
+
+	* gcc.dg/tree-ssa/pr100359.c: Compile-only for ! natural_alignment_32.
+
+2023-03-23  Pat Haugen  <pthaugen@linux.ibm.com>
+
+	* gcc.target/powerpc/mod-no_copy.c: New.
+	* gcc.target/powerpc/mod-peephole.c: New.
+
+2023-03-23  Andrew Pinski  <apinski@marvell.com>
+
+	PR c/84900
+	* gcc.dg/compound-literal-cast-lvalue-1.c: New test.
+
+2023-03-23  Gaius Mulley  <gaiusmod2@gmail.com>
+
+	PR modula2/109264
+	* gm2/iso/extended-opaque/pass/iso-extended-opaque-pass.exp:
+	New test.
+	* gm2/iso/extended-opaque/pass/stressset.def: New test.
+	* gm2/iso/extended-opaque/pass/stressset.mod: New test.
+	* gm2/iso/extended-opaque/pass/testset.mod: New test.
+	* gm2/projects/iso/small/run/pass/iso-extended-opaque-run-pass.exp:
+	New test.
+	* gm2/projects/iso/small/run/pass/stressset.def: New test.
+	* gm2/projects/iso/small/run/pass/stressset.mod: New test.
+	* gm2/projects/iso/small/run/pass/test1.mod: New test.
+	* gm2/projects/iso/small/run/pass/testlib.def: New test.
+	* gm2/projects/iso/small/run/pass/testlib.mod: New test.
+	* gm2/projects/iso/small/run/pass/testset.mod: New test.
+
+2023-03-23  Richard Biener  <rguenther@suse.de>
+
+	PR tree-optimization/107569
+	* g++.dg/opt/pr107569.C: New testcase.
+
+2023-03-23  Richard Biener  <rguenther@suse.de>
+
+	PR tree-optimization/109262
+	* g++.dg/torture/pr109262.C: New testcase.
+
+2023-03-23  Eric Botcazou  <ebotcazou@adacore.com>
+
+	* gnat.dg/div_zero.adb: Skip for aarch64*-*-* targets.
+
+2023-03-23  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/107532
+	* g++.dg/warn/Wdangling-reference11.C: New test.
+	* g++.dg/warn/Wdangling-reference12.C: New test.
+
+2023-03-23  Jakub Jelinek  <jakub@redhat.com>
+
+	PR tree-optimization/109176
+	* gcc.target/aarch64/sve/pr109176.c: New test.
+
+2023-03-23  Pan Li  <pan2.li@intel.com>
+	    Ju-Zhe Zhong  <juzhe.zhong@rivai.ai>
+
+	PR target/108654
+	PR target/108185
+	* gcc.target/riscv/rvv/base/pr108185-1.c: Update.
+	* gcc.target/riscv/rvv/base/pr108185-2.c: Ditto.
+	* gcc.target/riscv/rvv/base/pr108185-3.c: Ditto.
+
+2023-03-23  Jason Merrill  <jason@redhat.com>
+
+	PR c++/109241
+	* g++.dg/cpp1y/lambda-generic-local-class2.C: New test.
+
+2023-03-23  Ju-Zhe Zhong  <juzhe.zhong@rivai.ai>
+
+	PR target/109244
+	* g++.target/riscv/rvv/base/pr109244.C: New test.
+	* gcc.target/riscv/rvv/base/binop_vv_constraint-4.c: Adapt testcase.
+	* gcc.target/riscv/rvv/base/binop_vv_constraint-6.c: Ditto.
+	* gcc.target/riscv/rvv/base/binop_vx_constraint-127.c: Ditto.
+	* gcc.target/riscv/rvv/base/spill-1.c: Ditto.
+	* gcc.target/riscv/rvv/base/spill-2.c: Ditto.
+	* gcc.target/riscv/rvv/base/spill-3.c: Ditto.
+	* gcc.target/riscv/rvv/base/spill-5.c: Ditto.
+	* gcc.target/riscv/rvv/base/spill-7.c: Ditto.
+	* g++.target/riscv/rvv/base/bug-18.C: New test.
+	* gcc.target/riscv/rvv/base/merge_constraint-3.c: New test.
+	* gcc.target/riscv/rvv/base/merge_constraint-4.c: New test.
+
+2023-03-23  Ju-Zhe Zhong  <juzhe.zhong@rivai.ai>
+
+	PR target/109228
+	* gcc.target/riscv/rvv/base/vlenb-1.c: New test.
+
+2023-03-23  Ju-Zhe Zhong  <juzhe.zhong@rivai.ai>
+	    kito-cheng  <kito.cheng@sifive.com>
+
+	* g++.target/riscv/rvv/base/bug-10.C: New test.
+	* g++.target/riscv/rvv/base/bug-11.C: New test.
+	* g++.target/riscv/rvv/base/bug-12.C: New test.
+	* g++.target/riscv/rvv/base/bug-13.C: New test.
+	* g++.target/riscv/rvv/base/bug-14.C: New test.
+	* g++.target/riscv/rvv/base/bug-15.C: New test.
+	* g++.target/riscv/rvv/base/bug-16.C: New test.
+	* g++.target/riscv/rvv/base/bug-17.C: New test.
+	* g++.target/riscv/rvv/base/bug-2.C: New test.
+	* g++.target/riscv/rvv/base/bug-3.C: New test.
+	* g++.target/riscv/rvv/base/bug-4.C: New test.
+	* g++.target/riscv/rvv/base/bug-5.C: New test.
+	* g++.target/riscv/rvv/base/bug-6.C: New test.
+	* g++.target/riscv/rvv/base/bug-7.C: New test.
+	* g++.target/riscv/rvv/base/bug-8.C: New test.
+	* g++.target/riscv/rvv/base/bug-9.C: New test.
+
+2023-03-23  Ju-Zhe Zhong  <juzhe.zhong@rivai.ai>
+	    kito-cheng  <kito.cheng@sifive.com>
+
+	* gcc.target/riscv/rvv/base/bug-3.c: New test.
+	* gcc.target/riscv/rvv/base/bug-4.c: New test.
+	* gcc.target/riscv/rvv/base/bug-5.c: New test.
+
+2023-03-23  Kito Cheng  <kito.cheng@sifive.com>
+
+	* lib/target-supports.exp (check_effective_target_riscv_vector):
+	New.
+
+2023-03-22  David Malcolm  <dmalcolm@redhat.com>
+
+	PR testsuite/105959
+	* gcc.dg-selftests/dg-final.exp
+	(dg_final_directive_check_num_args): Update expected maximum
+	number of args for the various directives using dg-scan.
+	* lib/scanasm.exp (append_encoding_arg): New procedure.
+	(dg-scan): Add optional 3rd argument: the encoding to use when
+	reading from the file.
+	* lib/scansarif.exp (scan-sarif-file): Treat the file as UTF-8
+	encoded when reading it.
+	(scan-sarif-file-not): Likewise.
+
+2023-03-22  Jason Merrill  <jason@redhat.com>
+
+	PR c++/108390
+	* g++.dg/template/partial-order3.C: New test.
+
+2023-03-22  Harald Anlauf  <anlauf@gmx.de>
+	    Steven G. Kargl  <kargl@gcc.gnu.org>
+
+	PR fortran/104572
+	* gfortran.dg/pr104572.f90: New test.
+
+2023-03-22  Vladimir N. Makarov  <vmakarov@redhat.com>
+
+	* gcc.target/i386/pr109137.c: New.
+
+2023-03-22  Jason Merrill  <jason@redhat.com>
+
+	PR c++/108795
+	* g++.dg/ext/attr-tsafe1.C: New test.
+
+2023-03-22  Alex Coplan  <alex.coplan@arm.com>
+
+	PR c++/109177
+	* g++.dg/ext/pr109177.C: New test.
+
+2023-03-22  David Malcolm  <dmalcolm@redhat.com>
+
+	PR analyzer/109239
+	* gcc.dg/analyzer/deref-before-check-pr109239-linux-bus.c: New test.
+
+2023-03-22  Andrew Jenner  <andrew@codesourcery.com>
+
+	* gcc.target/gcn/complex.c: New test.
+
+2023-03-21  Harald Anlauf  <anlauf@gmx.de>
+
+	PR fortran/99036
+	* gfortran.dg/pr99036.f90: New test.
+
+2023-03-21  Jason Merrill  <jason@redhat.com>
+
+	PR c++/106890
+	* g++.dg/cpp0x/nsdmi-template25.C: New test.
+
+2023-03-21  Richard Biener  <rguenther@suse.de>
+
+	PR tree-optimization/109219
+	* gcc.dg/torture/pr109219.c: New testcase.
+
+2023-03-21  Jakub Jelinek  <jakub@redhat.com>
+
+	PR testsuite/108898
+	* gcc.dg/vect/vect-simd-clone-16.c: Remove parts of comment mentioning
+	epilogue loops.
+	* gcc.dg/vect/vect-simd-clone-17.c: Likewise.
+	* gcc.dg/vect/vect-simd-clone-18.c: Likewise.
+
+2023-03-21  Jakub Jelinek  <jakub@redhat.com>
+
+	PR testsuite/108898
+	* gcc.dg/vect/vect-simd-clone-16.c: Add --param vect-epilogues-nomask=0
+	to dg-additional-options.  Always expect just 2 foo.simdclone calls.
+	* gcc.dg/vect/vect-simd-clone-16f.c: Add
+	--param vect-epilogues-nomask=0 to dg-additional-options.
+	* gcc.dg/vect/vect-simd-clone-17.c: Likewise.  Always expect just 2
+	foo.simdclone calls.
+	* gcc.dg/vect/vect-simd-clone-17d.c: Remove -fdump-tree-optimized from
+	dg-additional-options.
+	* gcc.dg/vect/vect-simd-clone-17e.c: Likewise.
+	* gcc.dg/vect/vect-simd-clone-17f.c: Likewise.  Add
+	--param vect-epilogues-nomask=0 to dg-additional-options.
+	* gcc.dg/vect/vect-simd-clone-18.c: Add --param vect-epilogues-nomask=0
+	to dg-additional-options.  Always expect just 2 foo.simdclone calls.
+	* gcc.dg/vect/vect-simd-clone-18f.c: Add
+	--param vect-epilogues-nomask=0 to dg-additional-options.
+
+2023-03-21  Jakub Jelinek  <jakub@redhat.com>
+
+	PR tree-optimization/109215
+	* gcc.dg/Wzero-length-array-bounds-3.c: New test.
+
+2023-03-21  Richard Biener  <rguenther@suse.de>
+
+	PR tree-optimization/109170
+	* gcc.dg/Wuse-after-free-pr109170.c: New testcase.
+	* gcc.dg/tree-ssa/ssa-lim-21.c: Adjust.
+	* gcc.dg/predict-20.c: Likewise.
+
+2023-03-21  Paul Thomas  <pault@gcc.gnu.org>
+
+	PR fortran/109209
+	* gfortran.dg/pr109209.f90: New test.
+
+2023-03-20  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/109159
+	* g++.dg/cpp0x/explicit16.C: New test.
+
+2023-03-20  Jakub Jelinek  <jakub@redhat.com>
+
+	PR c++/109164
+	* g++.dg/tls/thread_local13.C: New test.
+	* g++.dg/tls/thread_local13-aux.cc: New file.
+	* g++.dg/tls/thread_local14.C: New test.
+	* g++.dg/tls/thread_local14-aux.cc: New file.
+
+2023-03-20   Michael Meissner  <meissner@linux.ibm.com>
+
+	PR target/109067
+	* gcc.target/powerpc/divic3-1.c: New test.
+	* gcc.target/powerpc/divic3-2.c: Likewise.
+	* gcc.target/powerpc/mulic3-1.c: Likewise.
+	* gcc.target/powerpc/mulic3-2.c: Likewise.
+
+2023-03-20  Harald Anlauf  <anlauf@gmx.de>
+
+	PR fortran/109186
+	* gfortran.dg/nearest_6.f90: New test.
+
+2023-03-20  Peter Bergner  <bergner@linux.ibm.com>
+
+	PR target/109178
+	* gcc.target/powerpc/pr109178.c: New test.
+
+2023-03-20  Jakub Jelinek  <jakub@redhat.com>
+
+	* g++.dg/torture/20230313.C (auto_vec): Change m_data type
+	from char to char [2 * sizeof (int)].
+
+2023-03-20  Paul Thomas  <pault@gcc.gnu.org>
+
+	PR fortran/87127
+	* gfortran.dg/external_procedures_4.f90: New test.
+
 2023-03-19  Harald Anlauf  <anlauf@gmx.de>
 
 	PR fortran/85877

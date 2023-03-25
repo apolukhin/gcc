@@ -1,3 +1,71 @@
+2023-03-24  Patrick Palka  <ppalka@redhat.com>
+
+	PR c++/106969
+	* parser.cc (cp_parser_class_specifier): Clear current_class_ptr
+	and current_class_ref sooner, before parsing a class definition.
+
+2023-03-24  Jason Merrill  <jason@redhat.com>
+
+	PR c++/105481
+	* pt.cc (type_unification_real): Adjust for partial ordering.
+
+2023-03-23  Jason Merrill  <jason@redhat.com>
+
+	PR c++/105996
+	* typeck.cc (build_ptrmemfunc): Drop 0-offset optimization
+	and location wrappers.
+
+2023-03-23  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/107532
+	* call.cc (class_has_reference_member_p): New.
+	(class_has_reference_member_p_r): New.
+	(reference_like_class_p): Don't look for a specific constructor.
+	Use a DFS walk with class_has_reference_member_p_r.
+
+2023-03-23  Jason Merrill  <jason@redhat.com>
+
+	PR c++/109241
+	* pt.cc (find_parameter_packs_r): Handle null TREE_BINFO.
+
+2023-03-22  Jason Merrill  <jason@redhat.com>
+
+	PR c++/108390
+	* pt.cc (unify): Use fold of build_nop instead of fold_convert.
+
+2023-03-22  Jason Merrill  <jason@redhat.com>
+
+	PR c++/108795
+	* semantics.cc (finish_id_expression_1): Check scope before
+	returning id_expression.
+
+2023-03-22  Alex Coplan  <alex.coplan@arm.com>
+
+	PR c++/109177
+	* call.cc (build_over_call): Use make_temp_override to suppress
+	both unavailable and deprecated warnings when calling
+	build_addr_func.
+
+2023-03-21  Jason Merrill  <jason@redhat.com>
+
+	PR c++/106890
+	* init.cc (maybe_instantiate_nsdmi_init): Don't leave
+	current_function_decl set to a constructor.
+
+2023-03-20  Marek Polacek  <polacek@redhat.com>
+
+	PR c++/109159
+	* call.cc (add_template_candidate_real): Add explicit decls to the
+	set of candidates when the initializer is a braced-init-list.
+
+2023-03-20  Jakub Jelinek  <jakub@redhat.com>
+
+	PR c++/109164
+	* cp-tree.h (var_needs_tls_wrapper): Declare.
+	* decl2.cc (var_needs_tls_wrapper): No longer static.
+	* decl.cc (cp_finish_decl): Clear TREE_READONLY on TLS variables
+	for which a TLS wrapper will be needed.
+
 2023-03-17  Jason Merrill  <jason@redhat.com>
 
 	PR c++/108975

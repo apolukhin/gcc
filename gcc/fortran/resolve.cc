@@ -11760,6 +11760,7 @@ generate_component_assignments (gfc_code **code, gfc_namespace *ns)
 	 of all kinds and allocatable components.  */
       if (!gfc_bt_struct (comp1->ts.type)
 	  || comp1->attr.pointer
+	  || comp1->attr.allocatable
 	  || comp1->attr.proc_pointer_comp
 	  || comp1->attr.class_pointer
 	  || comp1->attr.proc_pointer)
@@ -13984,6 +13985,13 @@ gfc_resolve_finalizers (gfc_symbol* derived, bool *finalizable)
 	  goto error;
 	}
       arg = dummy_args->sym;
+
+      if (!arg)
+	{
+	  gfc_error ("Argument of FINAL procedure at %L must be of type %qs",
+		     &list->proc_sym->declared_at, derived->name);
+	  goto error;
+	}
 
       if (arg->as && arg->as->type == AS_ASSUMED_RANK
 	  && ((list != derived->f2k_derived->finalizers) || list->next))
