@@ -5,6 +5,7 @@
 #include <tuple>
 
 using std::declval;
+using std::apply;
 
 void f1();
 
