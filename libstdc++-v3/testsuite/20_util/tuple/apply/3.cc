@@ -1,4 +1,4 @@
-// { dg-do compile { target c++20 } }
+// { dg-do compile { target c++23 } }
 
 // Test noexcept-specifier on std::apply with aggregates
 
