@@ -45,6 +45,7 @@
 # define __cpp_lib_constexpr_tuple 201811L
 # define __cpp_lib_aggregates_as_tuples 202311L
 # include <boost/pfr/detail/fields_count.hpp>
+# include <boost/pfr/detail/core.hpp>
 #endif
 
 
@@ -82,6 +83,12 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   template<typename _Tp>
     inline constexpr size_t elements_count_v = elements_count<_Tp>::value;
+
+  template <size_t _Ind, _TupleLikeAggregate _Tp>
+  struct tuple_element<_Ind, _Tp> : boost::pfr::detail::sequence_tuple::tuple_element<
+      _Ind, decltype( ::boost::pfr::detail::tie_as_tuple(std::declval<_Tp&>()) )
+    >
+  {};
 
   template <size_t _Int, _TupleLikeAggregate _Tp>
     constexpr tuple_element_t<_Int, _Tp>&
@@ -2548,11 +2555,6 @@ _GLIBCXX_END_NAMESPACE_VERSION
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 _GLIBCXX_BEGIN_NAMESPACE_VERSION
-
-  template <size_t _Ind, _TupleLikeAggregate _Tp>
-  struct tuple_element<_Ind, _Tp> {
-    using type = boost::pfr::tuple_element_t<_Ind, _Tp>;
-  };
 
   template <size_t _Ind, _TupleLikeAggregate _Tp>
   constexpr tuple_element_t<_Ind, _Tp>& get(_Tp& __x) noexcept {
