@@ -18,7 +18,7 @@ test01()
   };
   auto t = Aggreagate{1, '2', 3.0};
   std::apply( [&](int& i, char& c, double& d) {
-      VERIFY(&i == &t.);
+      VERIFY(&i == &t.i);
       VERIFY(&c == &t.c);
       VERIFY(&d == &t.d);
     }, t);

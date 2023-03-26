@@ -10,6 +10,26 @@ struct ExplicitFrom {
   explicit ExplicitFrom(T);
 };
 
+struct OnlyAssignable {
+  OnlyAssignable(int i) : i_{i} {}
+
+  OnlyAssignable(OnlyAssignable&&) = delete;
+  OnlyAssignable(const OnlyAssignable&) = delete;
+
+  OnlyAssignable& operator=(OnlyAssignable&&) = default;
+  OnlyAssignable& operator=(const OnlyAssignable&) = default;
+
+  const OnlyAssignable& operator=(OnlyAssignable&& other) const { i_ = other.i_; return *this; }
+  const OnlyAssignable& operator=(const OnlyAssignable& other) const { i_ = other.i_; return *this; }
+
+  bool operator == (const OnlyAssignable& other) const {
+    return i_ == other.i_;
+  }
+
+private:
+  mutable int i_;
+};
+
 template <typename ExpectedTuple, typename SomeAggreagate>
 void test_tuple_construction_x_elements(ExpectedTuple tuple, SomeAggreagate aggr) {    
   static_assert(std::is_constructible_v<ExpectedTuple, SomeAggreagate>);
