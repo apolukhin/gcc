@@ -2,9 +2,11 @@
 
 #include <tuple>
 
+#include <testsuite_hooks.h>
+
 template <class T>
 struct ExplicitFrom {
-    explicit ExplicitFrom(T);
+  explicit ExplicitFrom(T);
 };
 
 template <typename ExpectedTuple, typename SomeAggreagate>
@@ -13,20 +15,20 @@ void test_tuple_construction_x_elements(ExpectedTuple tuple, SomeAggreagate aggr
 
   {
     ExpectedTuple new_tuple = aggr;
-    assert(new_tuple == tuple);
+    VERIFY(new_tuple == tuple);
   }
   {
     ExpectedTuple new_tuple = std::as_const(aggr);
-    assert(new_tuple == tuple);
+    VERIFY(new_tuple == tuple);
   }
   {
     ExpectedTuple new_tuple = SomeAggreagate{aggr};
-    assert(new_tuple == tuple);
+    VERIFY(new_tuple == tuple);
   }
   {
     const SomeAggreagate tmp{aggr};
     ExpectedTuple new_tuple = std::move(tmp);
-    assert(new_tuple == tuple);
+    VERIFY(new_tuple == tuple);
   }
 
   // Checking explcit/implicit conversions
@@ -53,17 +55,17 @@ void test_tuple_assignment_3_elements() {
   ExpectedTuple tuple{1, 2, 3};
 
   tuple = SomeAggreagate{4, 5, 6};
-  assert((tuple == ExpectedTuple{4, 5, 6}));
+  VERIFY((tuple == ExpectedTuple{4, 5, 6}));
 
   {
     SomeAggreagate aggr{10, 11, 12};
     tuple = aggr;
-    assert((tuple == ExpectedTuple{10, 11, 12}));
+    VERIFY((tuple == ExpectedTuple{10, 11, 12}));
   }
   {
     const SomeAggreagate aggr{16, 17, 18};
     tuple = aggr;
-    assert((tuple == ExpectedTuple{16, 17, 18}));
+    VERIFY((tuple == ExpectedTuple{16, 17, 18}));
   }
 }
 
@@ -72,17 +74,17 @@ void test_tuple_assignment_2_elements() {
   ExpectedTuple tuple{1, 2};
 
   tuple = SomeAggreagate{4, 5};
-  assert((tuple == ExpectedTuple{4, 5}));
+  VERIFY((tuple == ExpectedTuple{4, 5}));
 
   {
     SomeAggreagate aggr{10, 11};
     tuple = aggr;
-    assert((tuple == ExpectedTuple{10, 11}));
+    VERIFY((tuple == ExpectedTuple{10, 11}));
   }
   {
     const SomeAggreagate aggr{16, 17};
     tuple = aggr;
-    assert((tuple == ExpectedTuple{16, 17}));
+    VERIFY((tuple == ExpectedTuple{16, 17}));
   }
 }
 
@@ -153,6 +155,6 @@ void test_tuple_construction_and_assignment_2_elements() {
 
 int main()
 {
-    test_tuple_construction_and_assignment_3_elements();
-    test_tuple_construction_and_assignment_2_elements();
+  test_tuple_construction_and_assignment_3_elements();
+  test_tuple_construction_and_assignment_2_elements();
 }
