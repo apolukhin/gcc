@@ -43,11 +43,17 @@
 # include <compare>
 # include <bits/ranges_util.h>		// for std::ranges::subrange
 # define __cpp_lib_constexpr_tuple 201811L
+
+// Use the following to compile and test:
+// CPLUS_INCLUDE_PATH=/data/code/boost/libs/pfr/include/ make -j4 bootstrap-lean
+// CPLUS_INCLUDE_PATH=/data/code/boost/libs/pfr/include/ make check-target-libstdc++-v3 RUNTESTFLAGS="conformance.exp=20_util/*"
+//
+// All the boost::pfr::* functions should be builtins or should be implemented via P1061
 # define __cpp_lib_aggregates_as_tuples 202311L
 # include <boost/pfr/detail/fields_count.hpp>
 # include <boost/pfr/detail/core.hpp>
-#endif
 
+#endif
 
 namespace std _GLIBCXX_VISIBILITY(default)
 {
@@ -90,21 +96,29 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     >
   {};
 
-  template <size_t _Int, _TupleLikeAggregate _Tp>
-    constexpr tuple_element_t<_Int, _Tp>&
-    get(_Tp&) noexcept;
+  template <size_t _Ind, _TupleLikeAggregate _Tp>
+  constexpr tuple_element_t<_Ind, _Tp>& get(_Tp& __x) noexcept {
+    return boost::pfr::detail::sequence_tuple::get<_Ind>( boost::pfr::detail::tie_as_tuple(__x) );
+  }
 
-  template <size_t _Int, _TupleLikeAggregate _Tp>
-    constexpr const tuple_element_t<_Int, _Tp>&
-    get(const _Tp&) noexcept;
+  template <size_t _Ind, _TupleLikeAggregate _Tp>
+  constexpr const tuple_element_t<_Ind, _Tp>& get(const _Tp& __x) noexcept {
+    return boost::pfr::detail::sequence_tuple::get<_Ind>( boost::pfr::detail::tie_as_tuple(__x) );
+  }
 
-  template <size_t _Int, _TupleLikeAggregate _Tp>
-    constexpr tuple_element_t<_Int, _Tp>&&
-    get(_Tp&&) noexcept;
+  template <size_t _Ind, _TupleLikeAggregate _Tp>
+  constexpr tuple_element_t<_Ind, _Tp>&& get(_Tp&& __x) noexcept {
+    return std::move(
+        boost::pfr::detail::sequence_tuple::get<_Ind>( boost::pfr::detail::tie_as_tuple(__x) )
+    );
+  }
 
-  template <size_t _Int, _TupleLikeAggregate _Tp>
-    constexpr const tuple_element_t<_Int, _Tp>&&
-    get(const _Tp&&) noexcept;
+  template <size_t _Ind, _TupleLikeAggregate _Tp>
+  constexpr const tuple_element_t<_Ind, _Tp>&& get(const _Tp&& __x) noexcept {
+    return std::move(
+        boost::pfr::detail::sequence_tuple::get<_Ind>( boost::pfr::detail::tie_as_tuple(__x) )
+    );
+  }
 #else
   template<typename _Tp>
   using __elements_count = tuple_size<typename remove_cv<
@@ -2540,46 +2554,6 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
 _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace std
-
-
-/////////////// P2141R1 implementation. All the boost::pfr::* functions should be builtins
-
-#ifdef __cpp_lib_aggregates_as_tuples
-
-// Use the following to compile and test:
-// CPLUS_INCLUDE_PATH=/data/code/boost/libs/pfr/include/ make -j4 bootstrap-lean
-// CPLUS_INCLUDE_PATH=/data/code/boost/libs/pfr/include/ make check-target-libstdc++-v3 RUNTESTFLAGS="conformance.exp=20_util/*"
-
-#include <boost/pfr/core.hpp>
-
-namespace std _GLIBCXX_VISIBILITY(default)
-{
-_GLIBCXX_BEGIN_NAMESPACE_VERSION
-
-  template <size_t _Ind, _TupleLikeAggregate _Tp>
-  constexpr tuple_element_t<_Ind, _Tp>& get(_Tp& __x) noexcept {
-    return boost::pfr::get<_Ind>(__x);
-  }
-
-  template <size_t _Ind, _TupleLikeAggregate _Tp>
-  constexpr const tuple_element_t<_Ind, _Tp>& get(const _Tp& __x) noexcept {
-    return boost::pfr::get<_Ind>(__x);
-  }
-
-  template <size_t _Ind, _TupleLikeAggregate _Tp>
-  constexpr tuple_element_t<_Ind, _Tp>&& get(_Tp&& __x) noexcept {
-    return std::move(boost::pfr::get<_Ind>(__x));
-  }
-
-  template <size_t _Ind, _TupleLikeAggregate _Tp>
-  constexpr const tuple_element_t<_Ind, _Tp>&& get(const _Tp&& __x) noexcept {
-    return std::move(boost::pfr::get<_Ind>(__x));
-  }
-
-_GLIBCXX_END_NAMESPACE_VERSION
-} // namespace std
-
-#endif // __cpp_lib_aggregates_as_tuples
 
 #endif // C++11
 
