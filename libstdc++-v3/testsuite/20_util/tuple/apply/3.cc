@@ -1,4 +1,5 @@
-// { dg-do compile { target c++23 } }
+// { dg-options "-std=c++20" }
+// { dg-do compile }
 
 // Test noexcept-specifier on std::apply with aggregates
 

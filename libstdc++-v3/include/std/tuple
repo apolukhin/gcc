@@ -76,7 +76,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   template<typename _Tp>
     requires requires { tuple_size<_Tp>{}; }
-  struct __elements_count<_Tp> : tuple_size<_Tp> {};
+  struct __elements_count<_Tp> : tuple_size<remove_cv_t<remove_reference_t<_Tp>>> {};
 
   template<_TupleLikeAggregate _Tp>
     requires (!requires { tuple_size<_Tp>{}; })

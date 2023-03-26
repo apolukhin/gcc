@@ -1,4 +1,5 @@
-// { dg-do run { target c++23 } }
+// { dg-options "-std=c++20" }
+// { dg-do run }
 
 #include <tuple>
 #include <utility>
