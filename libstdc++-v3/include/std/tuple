@@ -75,17 +75,17 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     struct __elements_count;
 
   template<typename _Tp>
-    requires requires { tuple_size<_Tp>{}; }
+    requires requires { tuple_size<remove_cv_t<remove_reference_t<_Tp>>>{}; }
   struct __elements_count<_Tp> : tuple_size<remove_cv_t<remove_reference_t<_Tp>>> {};
 
   template<_TupleLikeAggregate _Tp>
-    requires (!requires { tuple_size<_Tp>{}; })
+    requires (!requires { tuple_size<remove_cv_t<remove_reference_t<_Tp>>>{}; })
   struct __elements_count<_Tp> : integral_constant<size_t, boost::pfr::detail::fields_count<
     remove_cv_t<remove_reference_t<_Tp>>
   >() > {};
 
   template<typename _Tp>
-    using elements_count = __elements_count<remove_cv_t<remove_reference_t<_Tp>>>;
+    using elements_count = __elements_count<_Tp>;
 
   template<typename _Tp>
     inline constexpr size_t elements_count_v = elements_count<_Tp>::value;
@@ -2290,7 +2290,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     struct __make_1st_indices<_Tp, _Tpls...>
     {
       typedef typename _Build_index_tuple<__elements_count<
-	typename remove_reference<_Tp>::type>::value>::__type __type;
+	  _Tp>::value>::__type __type;
     };
 
   // Performs the actual concatenation by step-wise expanding tuple-like
