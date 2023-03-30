@@ -2178,18 +2178,6 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	)::type;
       return std::__tuple_cmp<_Cat>(__t, __u, index_sequence_for<_Tps...>());
     }
-
-  template<_TupleLikeAggregate _Aggr, typename... _Tps>
-    constexpr
-    auto
-    operator<=>(const _Aggr& __t, const tuple<_Tps...>& __u)
-    {
-      using _Cat = typename decltype(
-	  __detect_comparison_category<_Aggr, _Tps...>(
-	    make_index_sequence<__elements_count<_Aggr>::value>())
-	)::type;
-      return std::__tuple_cmp<_Cat>(__t, __u, index_sequence_for<_Tps...>());
-    }
 #endif
 
 #else
