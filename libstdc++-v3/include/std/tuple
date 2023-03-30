@@ -2459,7 +2459,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
 #if __cplusplus >= 201703L
 
-  // Unpack a std::tuple into a type trait and use its value.
+  // Unpack a std::tuple or an aggregate into a type trait and use its value.
   // For cv std::tuple<_Up> the result is _Trait<_Tp, cv _Up...>::value.
   // For cv std::tuple<_Up>& the result is _Trait<_Tp, cv _Up&...>::value.
   // Otherwise the result is false (because we don't know if std::get throws).
@@ -2481,6 +2481,18 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   template<template<typename...> class _Trait, typename _Tp, typename... _Up>
     inline constexpr bool __unpack_std_tuple<_Trait, _Tp, const tuple<_Up...>&>
       = _Trait<_Tp, const _Up&...>::value;
+
+#ifdef __cpp_lib_aggregates_as_tuples
+  template<template<typename...> class _Trait, typename _Tp, _TupleLikeAggregate _Aggr, size_t... _Ind>
+    constexpr bool __unpack_aggregate(index_sequence<_Ind...>) noexcept {
+      return _Trait<_Tp, decltype(get<_Ind>(std::declval<_Aggr>()))...>::value;
+    }
+
+  template<template<typename...> class _Trait, typename _Tp, _TupleLikeAggregate _Aggr>
+    inline constexpr bool __unpack_std_tuple<_Trait, _Tp, _Aggr>
+      = __unpack_aggregate<_Trait, _Tp, _Aggr>(
+        make_index_sequence<__elements_count<_Aggr>::value>());
+#endif
 
 # define __cpp_lib_apply 201603L
 
