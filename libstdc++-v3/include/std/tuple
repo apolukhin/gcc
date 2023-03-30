@@ -2158,6 +2158,40 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	= common_comparison_category_t<__detail::__synth3way_t<_Tps, _Ups>...>;
       return std::__tuple_cmp<_Cat>(__t, __u, index_sequence_for<_Tps...>());
     }
+
+#ifdef __cpp_lib_aggregates_as_tuples
+  template<typename _Aggr, typename... _Tps, size_t... _Ind>
+    constexpr auto __detect_comparison_category(index_sequence<_Ind...>) {
+      return common_comparison_category<
+        __detail::__synth3way_t<_Tps, tuple_element_t<_Ind, _Aggr> >...>
+      ();
+    }
+
+  template<typename... _Tps, _TupleLikeAggregate _Aggr>
+    constexpr
+    auto
+    operator<=>(const tuple<_Tps...>& __t, const _Aggr& __u)
+    {
+      using _Cat = typename decltype(
+	  __detect_comparison_category<_Aggr, _Tps...>(
+	    make_index_sequence<__elements_count<_Aggr>::value>())
+	)::type;
+      return std::__tuple_cmp<_Cat>(__t, __u, index_sequence_for<_Tps...>());
+    }
+
+  template<_TupleLikeAggregate _Aggr, typename... _Tps>
+    constexpr
+    auto
+    operator<=>(const _Aggr& __t, const tuple<_Tps...>& __u)
+    {
+      using _Cat = typename decltype(
+	  __detect_comparison_category<_Aggr, _Tps...>(
+	    make_index_sequence<__elements_count<_Aggr>::value>())
+	)::type;
+      return std::__tuple_cmp<_Cat>(__t, __u, index_sequence_for<_Tps...>());
+    }
+#endif
+
 #else
   template<typename... _TElements, typename... _UElements>
     constexpr bool
