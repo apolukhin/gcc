@@ -37,7 +37,9 @@
 
 #include <bits/stl_pair.h>		// for std::pair
 #include <bits/uses_allocator.h>	// for std::allocator_arg_t
+#ifndef _GLIBCXX_UTILITY_AGGREGATE_H  // TODO: remove before commit
 #include <bits/utility_aggregate.h>	// for std::tuple_size etc.
+#endif // ifndef _GLIBCXX_UTILITY_AGGREGATE_H  // TODO: remove before commit
 #include <bits/invoke.h>		// for std::__invoke
 #if __cplusplus > 201703L
 # include <compare>
