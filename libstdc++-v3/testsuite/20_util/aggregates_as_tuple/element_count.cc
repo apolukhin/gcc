@@ -7,12 +7,12 @@
 #include <utility>
 
 template <class T>
-concept ElementsCountComplete = requires(T&) { std::elements_count<T>::value; };
+concept ElementsCountComplete = requires(T&) { std::element_count<T>::value; };
 
 struct UncustomizedAggreagate { int i; char c; };
 
-static_assert(std::elements_count<UncustomizedAggreagate>::value == 2);
-static_assert(std::elements_count<const UncustomizedAggreagate>::value ==2);
+static_assert(std::element_count<UncustomizedAggreagate>::value == 2);
+static_assert(std::element_count<const UncustomizedAggreagate>::value ==2);
 
 static_assert(!ElementsCountComplete<int>);
 static_assert(!ElementsCountComplete<void>);

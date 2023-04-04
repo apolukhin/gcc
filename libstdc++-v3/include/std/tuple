@@ -72,23 +72,23 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     concept _TupleLikeAggregate = is_aggregate_v<remove_cv_t<remove_reference_t<_Tp>>>;
 
   template<typename _Tp>
-    struct __elements_count;
+    struct __element_count;
 
   template<typename _Tp>
     requires requires { tuple_size<remove_cv_t<remove_reference_t<_Tp>>>{}; }
-  struct __elements_count<_Tp> : tuple_size<remove_cv_t<remove_reference_t<_Tp>>> {};
+  struct __element_count<_Tp> : tuple_size<remove_cv_t<remove_reference_t<_Tp>>> {};
 
   template<_TupleLikeAggregate _Tp>
     requires (!requires { tuple_size<remove_cv_t<remove_reference_t<_Tp>>>{}; })
-  struct __elements_count<_Tp> : integral_constant<size_t, boost::pfr::detail::fields_count<
+  struct __element_count<_Tp> : integral_constant<size_t, boost::pfr::detail::fields_count<
     remove_cv_t<remove_reference_t<_Tp>>
   >() > {};
 
   template<typename _Tp>
-    using elements_count = __elements_count<_Tp>;
+    using element_count = __element_count<_Tp>;
 
   template<typename _Tp>
-    inline constexpr size_t elements_count_v = elements_count<_Tp>::value;
+    inline constexpr size_t element_count_v = element_count<_Tp>::value;
 
   template <size_t _Ind, _TupleLikeAggregate _Tp>
   struct tuple_element<_Ind, _Tp> : boost::pfr::detail::sequence_tuple::tuple_element<
@@ -121,7 +121,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   }
 #else
   template<typename _Tp>
-  using __elements_count = tuple_size<typename remove_cv<
+  using __element_count = tuple_size<typename remove_cv<
     typename remove_reference<_Tp>::type
   >::type>;
 #endif // __cpp_lib_aggregates_as_tuples
@@ -779,7 +779,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
    template <typename _Aggr, typename... _UElements, size_t... _Idx>
     constexpr bool
       __is_assignable_aggregate(index_sequence<_Idx...>)
-        noexcept requires (sizeof...(_UElements) == elements_count_v<_Aggr>)
+        noexcept requires (sizeof...(_UElements) == element_count_v<_Aggr>)
       {
         return (
             std::is_assignable_v<
@@ -1094,7 +1094,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
 #ifdef __cpp_lib_aggregates_as_tuples
       template<_TupleLikeAggregate _Aggr>
-	    requires (sizeof...(_Elements) == elements_count_v<_Aggr>)
+	    requires (sizeof...(_Elements) == element_count_v<_Aggr>)
 	constexpr
       explicit(!__is_implicitly_constructible<_Aggr>(make_index_sequence<sizeof...(_Elements)>()))
 	tuple(_Aggr&& __in)
@@ -1315,13 +1315,13 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	constexpr tuple&
 	operator=(_Aggr&& __in)
 	requires (__is_assignable_aggregate<_Aggr, _Elements&...>(
-           make_index_sequence<elements_count_v<_Aggr>>()
+           make_index_sequence<element_count_v<_Aggr>>()
          ))
 	{
 	  __assign_aggregate_to_tuple(
         *this,
         std::forward<_Aggr>(__in),
-        make_index_sequence<elements_count_v<_Aggr>>());
+        make_index_sequence<element_count_v<_Aggr>>());
 	  return *this;
 	}
 
@@ -1329,13 +1329,13 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	constexpr const tuple&
 	operator=(_Aggr&& __in) const
 	requires (__is_assignable_aggregate<_Aggr, const _Elements&...>(
-           make_index_sequence<elements_count_v<_Aggr>>()
+           make_index_sequence<element_count_v<_Aggr>>()
          ))
 	{
 	  __assign_aggregate_to_tuple(
         *this,
         std::forward<_Aggr>(__in),
-        make_index_sequence<elements_count_v<_Aggr>>());
+        make_index_sequence<element_count_v<_Aggr>>());
 	  return *this;
 	}
 #endif // __cpp_lib_aggregates_as_tuples
@@ -1771,7 +1771,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
 #ifdef __cpp_lib_aggregates_as_tuples
       template<_TupleLikeAggregate _Aggr>
-	requires (elements_count_v<_Aggr> == 2)
+	requires (element_count_v<_Aggr> == 2)
 	explicit(!(
         is_convertible_v<decltype(std::get<0>(std::declval<_Aggr>())), _T1>
         && is_convertible_v<decltype(std::get<1>(std::declval<_Aggr>())), _T2>
@@ -1918,7 +1918,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	constexpr tuple&
 	operator=(_Aggr&& __in)
 	requires (__is_assignable_aggregate<_Aggr, _T1&, _T2&>(
-           make_index_sequence<elements_count_v<_Aggr>>()
+           make_index_sequence<element_count_v<_Aggr>>()
          ))
 	{
 	  __assign_aggregate_to_tuple(
@@ -1932,7 +1932,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	constexpr const tuple&
 	operator=(_Aggr&& __in) const
 	requires (__is_assignable_aggregate<_Aggr, const _T1&, const _T2&>(
-           make_index_sequence<elements_count_v<_Aggr>>()
+           make_index_sequence<element_count_v<_Aggr>>()
          ))
 	{
 	  __assign_aggregate_to_tuple(
@@ -2174,7 +2174,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     {
       using _Cat = typename decltype(
 	  __detect_comparison_category<_Aggr, _Tps...>(
-	    make_index_sequence<__elements_count<_Aggr>::value>())
+	    make_index_sequence<__element_count<_Aggr>::value>())
 	)::type;
       return std::__tuple_cmp<_Cat>(__t, __u, index_sequence_for<_Tps...>());
     }
@@ -2257,7 +2257,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
   template<typename _Tuple>
     struct __do_make_tuple
-    : __make_tuple_impl<0, tuple<>, _Tuple, __elements_count<_Tuple>::value>
+    : __make_tuple_impl<0, tuple<>, _Tuple, __element_count<_Tuple>::value>
     { };
 
   // Returns the std::tuple equivalent of a tuple-like type.
@@ -2311,7 +2311,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   template<typename _Tp, typename... _Tpls>
     struct __make_1st_indices<_Tp, _Tpls...>
     {
-      typedef typename _Build_index_tuple<__elements_count<
+      typedef typename _Build_index_tuple<__element_count<
 	  _Tp>::value>::__type __type;
     };
 
@@ -2513,7 +2513,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   template<template<typename...> class _Trait, typename _Tp, _TupleLikeAggregate _Aggr>
     inline constexpr bool __unpack_std_tuple<_Trait, _Tp, _Aggr>
       = __unpack_aggregate<_Trait, _Tp, _Aggr>(
-        make_index_sequence<__elements_count<_Aggr>::value>());
+        make_index_sequence<__element_count<_Aggr>::value>());
 #endif
 
 # define __cpp_lib_apply 201603L
@@ -2532,7 +2532,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     noexcept(__unpack_std_tuple<is_nothrow_invocable, _Fn, _Tuple>)
     {
       using _Indices
-	= make_index_sequence<__elements_count<_Tuple>::value>;
+	= make_index_sequence<__element_count<_Tuple>::value>;
       return std::__apply_impl(std::forward<_Fn>(__f),
 			       std::forward<_Tuple>(__t),
 			       _Indices{});
@@ -2550,7 +2550,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     make_from_tuple(_Tuple&& __t)
     noexcept(__unpack_std_tuple<is_nothrow_constructible, _Tp, _Tuple>)
     {
-      constexpr size_t __n = __elements_count<_Tuple>::value;
+      constexpr size_t __n = __element_count<_Tuple>::value;
 #if __has_builtin(__reference_constructs_from_temporary)
       if constexpr (__n == 1)
 	{
