@@ -702,7 +702,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 #endif // C++23
     };
 
-#ifdef __cpp_lib_aggregates_as_tuples
+#ifdef __cpp_lib_aggregate_as_tuple
    // Forward declaration
    template <typename _Tuple, typename _Aggr, size_t... _Idx>
     constexpr void
@@ -719,7 +719,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
               decltype(std::get<_Idx>(std::declval<_Aggr>()))
             > && ...);
       }
-#endif // __cpp_lib_aggregates_as_tuples
+#endif // __cpp_lib_aggregate_as_tuple
 
   // Concept utility functions, reused in conditionally-explicit
   // constructors.
@@ -895,7 +895,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	  = _TCC<true>::template __convertible<_Args...>::value;
 #endif // C++23
 
-#ifdef __cpp_lib_aggregates_as_tuples
+#ifdef __cpp_lib_aggregate_as_tuple
       template <typename _Aggr, size_t... _Idx>
     static constexpr tuple
       __make_from_aggregate_impl(_Aggr&& __t, index_sequence<_Idx...>)
@@ -912,7 +912,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
         return _TCC<true>::template __is_implicitly_constructible<
           decltype(std::get<_Idx>(std::declval<_Aggr>()))...>();
       }
-#endif // __cpp_lib_aggregates_as_tuples
+#endif // __cpp_lib_aggregate_as_tuple
 
     public:
       template<typename _Dummy = void,
@@ -1024,7 +1024,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	: _Inherited(static_cast<const _Tuple_impl<0, _UElements...>&&>(__in)) { }
 #endif // C++23
 
-#ifdef __cpp_lib_aggregates_as_tuples
+#ifdef __cpp_lib_aggregate_as_tuple
       template<_TupleLikeAggregate _Aggr>
 	    requires (sizeof...(_Elements) == element_count_v<_Aggr>)
 	constexpr
@@ -1034,7 +1034,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
             __make_from_aggregate_impl(std::forward<_Aggr>(__in), make_index_sequence<sizeof...(_Elements)>())
         ))
 	: tuple(__make_from_aggregate_impl(std::forward<_Aggr>(__in), make_index_sequence<sizeof...(_Elements)>())) { }
-#endif // __cpp_lib_aggregates_as_tuples
+#endif // __cpp_lib_aggregate_as_tuple
 
       // Allocator-extended constructors.
 
@@ -1242,7 +1242,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	}
 #endif // C++23
 
-#ifdef __cpp_lib_aggregates_as_tuples
+#ifdef __cpp_lib_aggregate_as_tuple
       template<_TupleLikeAggregate _Aggr>
 	constexpr tuple&
 	operator=(_Aggr&& __in)
@@ -1270,7 +1270,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
         make_index_sequence<element_count_v<_Aggr>>());
 	  return *this;
 	}
-#endif // __cpp_lib_aggregates_as_tuples
+#endif // __cpp_lib_aggregate_as_tuple
 
       // tuple swap
       _GLIBCXX20_CONSTEXPR
@@ -1701,7 +1701,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 		     std::forward<const _U2>(__in.second)) { }
 #endif // C++23
 
-#ifdef __cpp_lib_aggregates_as_tuples
+#ifdef __cpp_lib_aggregate_as_tuple
       template<_TupleLikeAggregate _Aggr>
 	requires (element_count_v<_Aggr> == 2)
 	explicit(!(
@@ -1715,7 +1715,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     ))
     requires requires { tuple(std::get<0>(std::forward<_Aggr>(__in)), std::get<1>(std::forward<_Aggr>(__in))); }
 	: tuple(std::get<0>(std::forward<_Aggr>(__in)), std::get<1>(std::forward<_Aggr>(__in))) { }
-#endif // __cpp_lib_aggregates_as_tuples
+#endif // __cpp_lib_aggregate_as_tuple
 
       // Tuple assignment.
 
@@ -1845,7 +1845,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	}
 #endif // C++23
 
-#ifdef __cpp_lib_aggregates_as_tuples
+#ifdef __cpp_lib_aggregate_as_tuple
       template<_TupleLikeAggregate _Aggr>
 	constexpr tuple&
 	operator=(_Aggr&& __in)
@@ -1873,7 +1873,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
         make_index_sequence<2>());
 	  return *this;
 	}
-#endif // __cpp_lib_aggregates_as_tuples
+#endif // __cpp_lib_aggregate_as_tuple
 
       _GLIBCXX20_CONSTEXPR
       void
@@ -2091,7 +2091,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
       return std::__tuple_cmp<_Cat>(__t, __u, index_sequence_for<_Tps...>());
     }
 
-#ifdef __cpp_lib_aggregates_as_tuples
+#ifdef __cpp_lib_aggregate_as_tuple
   template<typename _Aggr, typename... _Tps, size_t... _Ind>
     constexpr auto __detect_comparison_category(index_sequence<_Ind...>) {
       return common_comparison_category<
@@ -2288,7 +2288,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   template<typename... _Tpls, typename = typename
            enable_if<__and_<
 
-#ifdef __cpp_lib_aggregates_as_tuples
+#ifdef __cpp_lib_aggregate_as_tuple
               __or_<__is_tuple_like<_Tpls>, __bool_constant<_TupleLikeAggregate<_Tpls>>>...
 #else
               __is_tuple_like<_Tpls>...
@@ -2436,7 +2436,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     inline constexpr bool __unpack_std_tuple<_Trait, _Tp, const tuple<_Up...>&>
       = _Trait<_Tp, const _Up&...>::value;
 
-#ifdef __cpp_lib_aggregates_as_tuples
+#ifdef __cpp_lib_aggregate_as_tuple
   template<template<typename...> class _Trait, typename _Tp, _TupleLikeAggregate _Aggr, size_t... _Ind>
     constexpr bool __unpack_aggregate(index_sequence<_Ind...>) noexcept {
       return _Trait<_Tp, decltype(get<_Ind>(std::declval<_Aggr>()))...>::value;
@@ -2508,7 +2508,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   { using type = tuple<common_type_t<_TTypes, _UTypes>...>; };
 #endif // C++23
 
-#ifdef __cpp_lib_aggregates_as_tuples
+#ifdef __cpp_lib_aggregate_as_tuple
    template <typename _Tuple, typename _Aggr, size_t... _Idx>
     constexpr void
       __assign_aggregate_to_tuple(_Tuple& __tuple, _Aggr&& __aggr, index_sequence<_Idx...>)

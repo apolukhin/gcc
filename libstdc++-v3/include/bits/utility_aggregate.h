@@ -43,7 +43,7 @@
 // CPLUS_INCLUDE_PATH=/data/code/boost/libs/pfr/include/ make check-target-libstdc++-v3 RUNTESTFLAGS="conformance.exp=20_util/*"
 //
 // All the boost::pfr::* functions should be builtins or should be implemented via P1061
-# define __cpp_lib_aggregates_as_tuples 202311L
+# define __cpp_lib_aggregate_as_tuple 202311L
 # include <boost/pfr/detail/fields_count.hpp>
 # include <boost/pfr/detail/core.hpp>
 #endif
@@ -52,7 +52,7 @@ namespace std _GLIBCXX_VISIBILITY(default)
 {
 _GLIBCXX_BEGIN_NAMESPACE_VERSION
 
-#ifdef __cpp_lib_aggregates_as_tuples
+#ifdef __cpp_lib_aggregate_as_tuple
   template <typename _Tp>
     concept _TupleLikeAggregate = is_aggregate_v<remove_cv_t<remove_reference_t<_Tp>>>;
 
@@ -109,7 +109,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   using __element_count = tuple_size<typename remove_cv<
     typename remove_reference<_Tp>::type
   >::type>;
-#endif // __cpp_lib_aggregates_as_tuples
+#endif // __cpp_lib_aggregate_as_tuple
 
 _GLIBCXX_END_NAMESPACE_VERSION
 } // namespace
