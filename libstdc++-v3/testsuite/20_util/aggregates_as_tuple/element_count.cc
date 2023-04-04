@@ -1,9 +1,6 @@
 // { dg-options "-std=c++20" }
 // { dg-do compile }
 
-// Verify that std::get works the same way as std::get for tuples.
-
-#include <tuple>
 #include <utility>
 
 template <class T>

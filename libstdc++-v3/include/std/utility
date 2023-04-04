@@ -73,7 +73,7 @@
 #include <initializer_list>
 #include <type_traits>
 #include <bits/move.h>
-#include <bits/utility.h>
+#include <bits/utility_aggregate.h>
 
 #if __cplusplus >= 202002L
 #include <ext/numeric_traits.h> // __is_standard_integer, __int_traits
